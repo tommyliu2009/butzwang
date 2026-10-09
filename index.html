@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>補助王｜台灣政府補助一站查詢</title>
+<meta name="description" content="補助王：彙整中央部會、縣市政府與鄉鎮市公所補助計畫，依截止日排序，快速找到適合你的補助。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="brand"><span class="logo">👑</span><span>補助王</span></div>
+    <h1>找補助，不再大海撈針</h1>
+    <p class="sub">彙整中央部會、22 縣市政府與鄉鎮市公所的補助計畫，依截止日一目了然。</p>
+    <div class="searchbar">
+      <input id="q" type="search" placeholder="搜尋補助名稱、主辦單位、對象或關鍵字（例：SBIR、數位轉型、雲林）" autocomplete="off">
+    </div>
+    <div class="stats" id="stats"></div>
+  </div>
+</header>
+
+<main class="wrap layout">
+  <aside class="filters" id="filters">
+    <div class="fhead"><h2>篩選條件</h2><button class="link" id="reset">清除全部</button></div>
+    <div class="fgroup"><h3>狀態</h3><div class="chips" data-key="status"></div></div>
+    <div class="fgroup"><h3>主辦層級</h3><div class="chips" data-key="level"></div></div>
+    <div class="fgroup"><h3>補助對象</h3><div class="chips" data-key="targets"></div></div>
+    <div class="fgroup"><h3>截止區間</h3><div class="chips single" data-key="range"></div></div>
+    <div class="fgroup"><h3>適用地區</h3>
+      <select id="region"><option value="">全部地區</option></select>
+    </div>
+    <div class="fgroup"><h3>主辦單位</h3>
+      <select id="org"><option value="">全部主辦單位</option></select>
+    </div>
+    <button class="btn primary only-mobile" id="applyFilters">查看結果</button>
+  </aside>
+
+  <section class="results">
+    <div class="toolbar">
+      <button class="btn only-mobile" id="openFilters">⚙ 篩選</button>
+      <span id="count" class="count"></span>
+      <label class="sort">排序
+        <select id="sort">
+          <option value="deadline">截止日：近 → 遠</option>
+          <option value="deadline_desc">截止日：遠 → 近</option>
+          <option value="updated">最近更新</option>
+          <option value="name">名稱</option>
+        </select>
+      </label>
+    </div>
+    <div id="list" class="grid"></div>
+    <div id="empty" class="empty" hidden>找不到符合條件的補助，試試放寬篩選條件。</div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>資料最後更新：<b id="updated">—</b>（台北時間）・共 <span id="total">0</span> 筆</p>
+    <p class="muted">本站資料彙整自政府官網、新聞及公開彙整平台，「預估下次開放」依過去公告推算，實際以主辦單位公告為準。</p>
+  </div>
+</footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="backdrop" data-close></div>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="close" data-close aria-label="關閉">×</button>
+    <div id="mBody"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
