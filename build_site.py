@@ -73,7 +73,7 @@ with open(SRC, encoding='utf-8-sig') as f:
             'name': r['補助名稱'].strip(),
             'org': r.get('主辦單位', '').strip(),
             'level': (r.get('層級') or '').strip() or level(r.get('主辦單位', '')),
-            'region': ((r.get('地區') or '').strip().replace('市','').replace('縣','') if (r.get('地區') or '').strip() not in ('','全國') else '') or region(r.get('主辦單位', ''), r.get('對象', '')),
+            'region': ((lambda g: g if g in ('嘉義市','嘉義縣','新竹市','新竹縣') else g.replace('市','').replace('縣',''))((r.get('地區') or '').strip()) if (r.get('地區') or '').strip() not in ('','全國') else '') or region(r.get('主辦單位', ''), r.get('對象', '')),
             'deadline': dl.isoformat() if dl else None,
             'deadlineText': (r.get('截止日期') or '').strip(),
             'target': r.get('對象', '').strip(),
