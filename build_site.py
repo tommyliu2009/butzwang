@@ -87,6 +87,9 @@ with open(SRC, encoding='utf-8-sig') as f:
             'cycle': r.get('週期規律', '').strip(),
             'nextOpen': r.get('預估下次開放', '').strip(),
             'notes': r.get('備註/參考連結', '').strip(),
+            'year': (r.get('年度') or '').strip(),
+            'parent': (r.get('所屬計畫') or '').strip(),
+            'kind': (r.get('資料類型') or '現行').strip(),
         })
 
 for r in rows:
@@ -95,10 +98,16 @@ for r in rows:
     if r['url'] and PRIVATE.search(r['url']): r['url'] = ''
     assert not any(isinstance(v, str) and PRIVATE.search(v) for v in r.values()), r['name']
 
-out = {'generated': datetime.datetime.now(TZ).strftime('%Y-%m-%d %H:%M'), 'count': len(rows), 'items': rows}
+gen = datetime.datetime.now(TZ).strftime('%Y-%m-%d %H:%M')
+cur = [r for r in rows if r['kind'] != '歷史']
+hist = [{k: v for k, v in r.items() if k not in ('cycle','nextOpen','firstSeen','updated','deadlineText') and v not in ('', None, [])} for r in rows if r['kind'] == '歷史']
+out = {'generated': gen, 'count': len(cur), 'histCount': len(hist), 'items': cur}
 with open(OUT, 'w', encoding='utf-8') as f:
     json.dump(out, f, ensure_ascii=False, indent=1)
-# 也輸出 data.js，讓直接以 file:// 開啟 index.html 時也能讀到資料
 with open(OUT[:-2], 'w', encoding='utf-8') as f:
     f.write('window.BZW_DATA=' + json.dumps(out, ensure_ascii=False) + ';')
-print(f'wrote {OUT} ({len(rows)} items, generated {out["generated"]})')
+hp = os.path.join(os.path.dirname(OUT), 'data_hist.js')
+with open(hp, 'w', encoding='utf-8') as f:
+    f.write('window.BZW_HIST=' + json.dumps(hist, ensure_ascii=False, separators=(',',':')) + ';')
+rows = cur
+print(f'wrote {OUT} ({len(cur)} current, {len(hist)} history, generated {gen})')

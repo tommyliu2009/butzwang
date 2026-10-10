@@ -12,27 +12,30 @@ const items0 = DATA.items.map(x => {
   if (d !== null && d < 0 && status === '開放中') status = '已截止';
   return {...x, days: d, status, _txt: [x.name, x.org, x.target, x.summary, x.cycle, x.nextOpen, x.region].join(' ').toLowerCase()};
 });
-const items = items0;
+let items = items0; const CUR = items0; let HIST = null; let MODE = '現行';
+const prep = x => { const d = daysLeft(x.deadline); return {...x, days: d, _txt: [x.name, x.org, x.target, x.summary, x.region, x.year, x.parent].join(' ').toLowerCase()}; };
 
 const RANGES = [['all','不限'],['7','7 天內'],['30','30 天內'],['90','90 天內'],['rolling','隨時受理/待公告']];
 const state = {q:'', status:new Set(['開放中','即將開放','常態性/依公告']), level:new Set(), targets:new Set(), range:'all', region:'', org:'', sort:'deadline'};
 
 function counts(key){ const m = {}; items.forEach(x => [].concat(x[key]).forEach(v => m[v] = (m[v]||0)+1)); return m; }
+const bound = new Set();
 function buildChips(key, order){
   const box = document.querySelector(`.chips[data-key="${key}"]`); const c = counts(key);
   const vals = order || Object.keys(c).sort((a,b)=>c[b]-c[a]);
   box.innerHTML = vals.filter(v=>c[v]).map(v => `<button class="chip" data-v="${esc(v)}">${esc(v)}<small>${c[v]}</small></button>`).join('');
+  if (bound.has(key)) return; bound.add(key);
   box.addEventListener('click', e => { const b = e.target.closest('.chip'); if(!b) return;
     const v = b.dataset.v; state[key].has(v) ? state[key].delete(v) : state[key].add(v); render(); });
 }
-buildChips('status', ['開放中','即將開放','常態性/依公告','已截止']);
+buildChips('status', ['開放中','即將開放','常態性/依公告','已截止','歷史(已結束)']);
 buildChips('level', ['中央','縣市','鄉鎮市','民間/其他']);
 buildChips('targets');
 const rbox = document.querySelector('.chips[data-key="range"]');
 rbox.innerHTML = RANGES.map(([v,l]) => `<button class="chip" data-v="${v}">${l}</button>`).join('');
 rbox.addEventListener('click', e => { const b = e.target.closest('.chip'); if(b){ state.range = b.dataset.v; render(); }});
 
-const fillSelect = (sel, key) => { const c = counts(key); Object.keys(c).sort((a,b)=>a.localeCompare(b,'zh-Hant')).forEach(v => sel.insertAdjacentHTML('beforeend', `<option value="${esc(v)}">${esc(v)}（${c[v]}）</option>`)); };
+const fillSelect = (sel, key) => { sel.querySelectorAll('option:not([value=""])').forEach(o=>o.remove()); const c = counts(key); Object.keys(c).sort((a,b)=>a.localeCompare(b,'zh-Hant')).forEach(v => sel.insertAdjacentHTML('beforeend', `<option value="${esc(v)}">${esc(v)}（${c[v]}）</option>`)); };
 fillSelect($('#region'), 'region'); fillSelect($('#org'), 'org');
 $('#region').onchange = e => { state.region = e.target.value; render(); };
 $('#org').onchange = e => { state.org = e.target.value; render(); };
@@ -79,7 +82,7 @@ function card(x){
     <h3>${esc(x.name)}</h3>
     <div class="org">🏛 ${esc(x.org)}${x.target?`　👥 ${esc(x.target)}`:''}</div>
     <p class="summary">${esc(x.summary)}</p>
-    ${x.cycle||x.nextOpen?`<div class="cycle">🔁 ${esc(x.nextOpen||x.cycle)}</div>`:''}
+    ${x.cycle||x.nextOpen?`<div class="cycle">🔁 ${esc(x.nextOpen||x.cycle)}</div>`:''}${x.kind==='歷史'?`<div class="cycle">🗂 ${esc(x.year)}年度${x.parent?'　所屬：'+esc(x.parent):''}</div>`:''}
     <div class="bottom"><span class="dl">截止 <b>${esc(fmtDate(x))}</b>${badge(x)}</span>
       ${x.url?`<a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">原始連結 ↗</a>`:''}</div>
   </article>`;
@@ -118,7 +121,7 @@ function openModal(id){
       ${row('截止日期', esc(fmtDate(x)) + badge(x), true)}
       ${row('補助對象', x.target)}
       ${row('摘要', x.summary)}
-      ${row('週期規律', x.cycle)}
+      ${row('年度', x.year)}${row('所屬計畫', x.parent)}${row('週期規律', x.cycle)}
       ${row('預估下次開放', x.nextOpen)}
       ${row('資料來源', x.sourceType)}
       ${row('收錄／更新', [x.firstSeen, x.updated].filter(Boolean).join(' ／ '))}
@@ -139,4 +142,19 @@ const rolling = items.filter(x => x.status==='常態性/依公告').length;
 $('#stats').innerHTML = `<span class="stat"><b>${items.length}</b>筆補助</span><span class="stat"><b>${rolling}</b>常態性/依公告</span><span class="stat"><b>${open}</b>開放中</span><span class="stat"><b>${week}</b>14 天內截止</span><span class="stat"><b>${upcoming}</b>即將開放</span>`;
 $('#updated').textContent = DATA.generated; $('#total').textContent = items.length;
 render();
+function setMode(m){
+  MODE = m; document.querySelectorAll('#kindToggle .chip').forEach(b => b.classList.toggle('on', b.dataset.k === m));
+  items = m === '歷史' ? HIST : CUR;
+  state.status = m === '歷史' ? new Set() : new Set(['開放中','即將開放','常態性/依公告']);
+  state.level.clear(); state.targets.clear(); state.region=''; state.org=''; state.range='all';
+  buildChips('status', ['開放中','即將開放','常態性/依公告','已截止','歷史(已結束)']); buildChips('level', ['中央','縣市','鄉鎮市','民間/其他']); buildChips('targets');
+  fillSelect($('#region'), 'region'); fillSelect($('#org'), 'org'); $('#region').value=''; $('#org').value='';
+  $('#total').textContent = items.length; render();
+}
+$('#kindToggle').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b || b.dataset.k === MODE) return;
+  if (b.dataset.k === '歷史' && !HIST) { b.textContent = '載入中…'; const s = document.createElement('script'); s.src = 'data_hist.js';
+    s.onload = () => { HIST = window.BZW_HIST.map(x => prep({targets:['其他'], status:'歷史(已結束)', ...x})); b.textContent = `歷史紀錄（113–115年，${HIST.length}筆）`; setMode('歷史'); };
+    document.body.appendChild(s); return; }
+  setMode(b.dataset.k); });
+if (location.hash === '#history') document.querySelector('#kindToggle .chip[data-k="歷史"]').click();
 })();
