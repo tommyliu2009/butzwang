@@ -90,3 +90,5 @@ select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:10
 .topbar{width:100%;justify-content:space-between !important}
 .topbar .brand{margin:0;justify-content:flex-start}
 .topbar .corp{margin-left:auto}
+.counter{margin-top:14px;text-align:center;font-size:.85rem;color:var(--muted)}
+.counter img{margin-top:4px;height:20px}
