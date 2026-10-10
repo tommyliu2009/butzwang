@@ -83,6 +83,8 @@ with open(SRC, encoding='utf-8-sig') as f:
             'sourceType': r.get('來源類型', '').strip(),
             'firstSeen': r.get('首次收錄日', '').strip(),
             'updated': r.get('最後更新日', '').strip(),
+            'verified': (r.get('最後核實日期') or '').strip(),
+            'linkStatus': (r.get('連結狀態') or '').strip(),
             'status': st,
             'cycle': r.get('週期規律', '').strip(),
             'nextOpen': r.get('預估下次開放', '').strip(),
@@ -100,7 +102,7 @@ for r in rows:
 
 gen = datetime.datetime.now(TZ).strftime('%Y-%m-%d %H:%M')
 cur = [r for r in rows if r['kind'] != '歷史']
-hist = [{k: v for k, v in r.items() if k not in ('cycle','nextOpen','firstSeen','updated','deadlineText') and v not in ('', None, [])} for r in rows if r['kind'] == '歷史']
+hist = [{k: v for k, v in r.items() if k not in ('cycle','nextOpen','firstSeen','updated','deadlineText','verified','linkStatus') and v not in ('', None, [])} for r in rows if r['kind'] == '歷史']
 out = {'generated': gen, 'count': len(cur), 'histCount': len(hist), 'items': cur}
 with open(OUT, 'w', encoding='utf-8') as f:
     json.dump(out, f, ensure_ascii=False, indent=1)

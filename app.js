@@ -125,6 +125,7 @@ function openModal(id){
       ${row('預估下次開放', x.nextOpen)}
       ${row('資料來源', x.sourceType)}
       ${row('收錄／更新', [x.firstSeen, x.updated].filter(Boolean).join(' ／ '))}
+      ${row('最後核實', [x.verified, x.linkStatus].filter(Boolean).join(' ／ '))}
     </dl>
     ${x.notes ? `<div class="notes"><b>備註／參考連結</b><br>${linkify(x.notes)}</div>` : ''}
     <div class="actions">${x.url?`<a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener">前往原始公告 ↗</a>`:''}
