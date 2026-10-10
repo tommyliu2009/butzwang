@@ -5,7 +5,7 @@
 import csv, json, re, sys, datetime, os
 from zoneinfo import ZoneInfo
 
-SRC = sys.argv[1] if len(sys.argv) > 1 else '/workspace/subsidy/補助資料庫.csv'
+SRC = sys.argv[1] if len(sys.argv) > 1 else '/workspace/subsidy/補助資料庫_full.csv'
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data.json')
 TZ = ZoneInfo('Asia/Taipei')
 today = datetime.datetime.now(TZ).date()
@@ -72,8 +72,8 @@ with open(SRC, encoding='utf-8-sig') as f:
             'id': i + 1,
             'name': r['補助名稱'].strip(),
             'org': r.get('主辦單位', '').strip(),
-            'level': level(r.get('主辦單位', '')),
-            'region': region(r.get('主辦單位', ''), r.get('對象', '')),
+            'level': (r.get('層級') or '').strip() or level(r.get('主辦單位', '')),
+            'region': ((r.get('地區') or '').strip().replace('市','').replace('縣','') if (r.get('地區') or '').strip() not in ('','全國') else '') or region(r.get('主辦單位', ''), r.get('對象', '')),
             'deadline': dl.isoformat() if dl else None,
             'deadlineText': (r.get('截止日期') or '').strip(),
             'target': r.get('對象', '').strip(),

@@ -6,15 +6,16 @@ const linkify = s => esc(s).replace(/(https?:\/\/[^\s；;，,）)]+)/g, '<a href
 const today = (() => { const d = new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Taipei'})); d.setHours(0,0,0,0); return d; })();
 const daysLeft = iso => iso ? Math.round((new Date(iso + 'T00:00:00') - today) / 864e5) : null;
 
-const items = DATA.items.map(x => {
+const items0 = DATA.items.map(x => {
   const d = daysLeft(x.deadline);
   let status = x.status;
   if (d !== null && d < 0 && status === '開放中') status = '已截止';
   return {...x, days: d, status, _txt: [x.name, x.org, x.target, x.summary, x.cycle, x.nextOpen, x.region].join(' ').toLowerCase()};
 });
+const items = items0;
 
 const RANGES = [['all','不限'],['7','7 天內'],['30','30 天內'],['90','90 天內'],['rolling','隨時受理/待公告']];
-const state = {q:'', status:new Set(['開放中','即將開放']), level:new Set(), targets:new Set(), range:'all', region:'', org:'', sort:'deadline'};
+const state = {q:'', status:new Set(['開放中','即將開放','常態性/依公告']), level:new Set(), targets:new Set(), range:'all', region:'', org:'', sort:'deadline'};
 
 function counts(key){ const m = {}; items.forEach(x => [].concat(x[key]).forEach(v => m[v] = (m[v]||0)+1)); return m; }
 function buildChips(key, order){
@@ -24,7 +25,7 @@ function buildChips(key, order){
   box.addEventListener('click', e => { const b = e.target.closest('.chip'); if(!b) return;
     const v = b.dataset.v; state[key].has(v) ? state[key].delete(v) : state[key].add(v); render(); });
 }
-buildChips('status', ['開放中','即將開放','已截止']);
+buildChips('status', ['開放中','即將開放','常態性/依公告','已截止']);
 buildChips('level', ['中央','縣市','鄉鎮市','民間/其他']);
 buildChips('targets');
 const rbox = document.querySelector('.chips[data-key="range"]');
@@ -64,7 +65,7 @@ function match(x){
 }
 function sortFn(a,b){
   const big = 1e9, ka = a.days ?? big/2, kb = b.days ?? big/2;
-  const rank = x => x.days === null ? 1 : x.days < 0 ? 2 : 0;   // 未截止 → 不定期 → 已截止
+  const rank = x => x.days === null ? (x.status==='常態性/依公告' ? 1.5 : 1) : x.days < 0 ? 2 : 0;   // 未截止 → 不定期 → 已截止
   switch(state.sort){
     case 'deadline': return rank(a)-rank(b) || (rank(a)===2 ? kb-ka : ka-kb);
     case 'deadline_desc': return rank(a)-rank(b) || kb-ka;
@@ -83,11 +84,23 @@ function card(x){
       ${x.url?`<a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">原始連結 ↗</a>`:''}</div>
   </article>`;
 }
+let RES = [], shown = 0; const PAGE = 60;
+function more(){
+  const next = RES.slice(shown, shown + PAGE);
+  $('#list').insertAdjacentHTML('beforeend', next.map(card).join(''));
+  shown += next.length;
+  let b = document.getElementById('moreBtn');
+  if (!b) { b = document.createElement('button'); b.id = 'moreBtn'; b.className = 'btn'; b.style.cssText = 'display:block;margin:16px auto;padding:10px 24px';
+    b.onclick = more; $('#list').after(b); }
+  b.hidden = shown >= RES.length; b.textContent = `顯示更多（已顯示 ${shown} / ${RES.length}）`;
+}
+if ('IntersectionObserver' in window) { const io = new IntersectionObserver(es => { if (es[0].isIntersecting && shown < RES.length) more(); }, {rootMargin:'600px'});
+  setTimeout(() => { const b = document.getElementById('moreBtn'); if (b) io.observe(b); }, 0); }
 function render(){
   document.querySelectorAll('.chips[data-key]').forEach(box => { const k = box.dataset.key;
     box.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', k==='range' ? state.range===c.dataset.v : state[k].has(c.dataset.v))); });
   const res = items.filter(match).sort(sortFn);
-  $('#list').innerHTML = res.map(card).join('');
+  RES = res; shown = 0; $('#list').innerHTML = ''; more();
   $('#empty').hidden = res.length > 0;
   $('#count').textContent = `找到 ${res.length} 筆補助`;
 }
@@ -122,7 +135,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal
 const open = items.filter(x => x.status==='開放中').length;
 const week = items.filter(x => x.days !== null && x.days >= 0 && x.days <= 14).length;
 const upcoming = items.filter(x => x.status==='即將開放').length;
-$('#stats').innerHTML = `<span class="stat"><b>${items.length}</b>筆補助</span><span class="stat"><b>${open}</b>開放中</span><span class="stat"><b>${week}</b>14 天內截止</span><span class="stat"><b>${upcoming}</b>即將開放</span>`;
+const rolling = items.filter(x => x.status==='常態性/依公告').length;
+$('#stats').innerHTML = `<span class="stat"><b>${items.length}</b>筆補助</span><span class="stat"><b>${rolling}</b>常態性/依公告</span><span class="stat"><b>${open}</b>開放中</span><span class="stat"><b>${week}</b>14 天內截止</span><span class="stat"><b>${upcoming}</b>即將開放</span>`;
 $('#updated').textContent = DATA.generated; $('#total').textContent = items.length;
 render();
 })();

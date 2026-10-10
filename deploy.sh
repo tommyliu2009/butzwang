@@ -3,7 +3,7 @@
 # 用法：./deploy.sh [CSV路徑]   (預設 /workspace/subsidy/補助資料庫.csv)
 set -euo pipefail
 cd "$(dirname "$0")"
-CSV="${1:-/workspace/subsidy/補助資料庫.csv}"
+CSV="${1:-/workspace/subsidy/補助資料庫_full.csv}"
 python3 build_site.py "$CSV"
 # 再次確認沒有私人資料
 if grep -Eq 'GetGrant|日報|紀錄檔|週期性補助預測|彙整報告|20260920|drive\.google|docs\.google|使用者|user_files' data.json data.js; then
