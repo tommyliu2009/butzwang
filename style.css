@@ -77,3 +77,8 @@ select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:10
  .kv{grid-template-columns:86px 1fr}
  .dialog{padding:22px 18px}
 }
+
+.ad{max-width:720px;margin:20px auto 0;padding:16px 20px;border:2px solid #f08a24;border-radius:12px;background:#fff7ee;text-align:center;line-height:1.7}
+.ad-tag{font-weight:700;color:#d2691e;font-size:1.05rem}
+.ad-name{font-weight:700;font-size:1.15rem}
+.ad-contact a{color:#d2691e}
