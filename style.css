@@ -101,3 +101,5 @@ select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:10
 .bignum-sub{display:block;font-size:14px;font-weight:500;color:#666;margin-top:2px}
 @media (max-width:860px){.bignum{font-size:16px}.bignum b{font-size:30px}}
 .bignum b{font-size:inherit !important;margin:0 4px}
+
+.searchbar{display:flex;gap:8px}.searchbar #q{flex:1;min-width:0}.qbtn{flex:none;padding:0 22px;border:0;border-radius:12px;background:#e8590c;color:#fff;font-size:16px;font-weight:700;cursor:pointer}@media(max-width:600px){.qbtn{padding:0 14px}}

@@ -19,14 +19,14 @@ const RANGES = [['all','不限'],['7','7 天內'],['30','30 天內'],['90','90 �
 const state = {q:'', status:new Set(['開放中','即將開放','常態性/依公告']), level:new Set(), targets:new Set(), range:'all', region:'', org:'', sort:'deadline'};
 
 function counts(key){ const m = {}; items.forEach(x => [].concat(x[key]).forEach(v => m[v] = (m[v]||0)+1)); return m; }
-const bound = new Set();
+const bound = new Set(); let statusTouched = false;
 function buildChips(key, order){
   const box = document.querySelector(`.chips[data-key="${key}"]`); const c = counts(key);
   const vals = order || Object.keys(c).sort((a,b)=>c[b]-c[a]);
   box.innerHTML = vals.filter(v=>c[v]).map(v => `<button class="chip" data-v="${esc(v)}">${esc(v)}<small>${c[v]}</small></button>`).join('');
   if (bound.has(key)) return; bound.add(key);
   box.addEventListener('click', e => { const b = e.target.closest('.chip'); if(!b) return;
-    const v = b.dataset.v; state[key].has(v) ? state[key].delete(v) : state[key].add(v); render(); });
+    if (key==='status') statusTouched = true; const v = b.dataset.v; state[key].has(v) ? state[key].delete(v) : state[key].add(v); render(); });
 }
 buildChips('status', ['開放中','即將開放','常態性/依公告','已截止','歷史(已結束)']);
 buildChips('level', ['中央','縣市','鄉鎮市','民間/其他']);
@@ -40,8 +40,17 @@ fillSelect($('#region'), 'region'); fillSelect($('#org'), 'org');
 $('#region').onchange = e => { state.region = e.target.value; render(); };
 $('#org').onchange = e => { state.org = e.target.value; render(); };
 $('#sort').onchange = e => { state.sort = e.target.value; render(); };
-let t; $('#q').addEventListener('input', e => { clearTimeout(t); t = setTimeout(()=>{ state.q = e.target.value.trim().toLowerCase(); render(); }, 120); });
-$('#reset').onclick = () => { state.status.clear(); state.level.clear(); state.targets.clear(); state.range='all'; state.region=''; state.org=''; state.q='';
+let t, composing = false; const qEl = $('#q');
+const doSearch = () => { clearTimeout(t); const v = qEl.value.trim().toLowerCase(); if (v === state.q) return; state.q = v; render(); if (v) { const l = $('#count'); if (l && window.innerWidth < 820) l.scrollIntoView({behavior:'smooth', block:'start'}); } };
+qEl.addEventListener('compositionstart', () => composing = true);
+qEl.addEventListener('compositionend', () => { composing = false; clearTimeout(t); t = setTimeout(doSearch, 250); });
+qEl.addEventListener('input', () => { if (composing) return; clearTimeout(t); t = setTimeout(doSearch, 250); });
+qEl.addEventListener('search', doSearch);
+qEl.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); doSearch(); qEl.blur(); } });
+const qBtn = $('#qBtn'); if (qBtn) qBtn.addEventListener('click', doSearch);
+// 頁面載入前已輸入的字也要算
+if (qEl.value.trim()) state.q = qEl.value.trim().toLowerCase();
+$('#reset').onclick = () => { state.status.clear(); state.level.clear(); state.targets.clear(); state.range='all'; state.region=''; state.org=''; state.q=''; statusTouched=false;
   $('#q').value=''; $('#region').value=''; $('#org').value=''; render(); };
 $('#openFilters').onclick = () => $('#filters').classList.add('open');
 $('#applyFilters').onclick = () => $('#filters').classList.remove('open');
@@ -57,7 +66,7 @@ const fmtDate = x => x.deadline ? x.deadline.replace(/-/g,'/') : (x.deadlineText
 
 function match(x){
   if (state.q && !state.q.split(/\s+/).every(w => x._txt.includes(w.replace(/台/g,'臺')) || x._txt.includes(w))) return false;
-  if (state.status.size && !state.status.has(x.status)) return false;
+  if (state.status.size && !(state.q && !statusTouched) && !state.status.has(x.status)) return false;
   if (state.level.size && !state.level.has(x.level)) return false;
   if (state.targets.size && !x.targets.some(v => state.targets.has(v))) return false;
   if (state.region && x.region !== state.region) return false;
@@ -105,7 +114,7 @@ function render(){
   const res = items.filter(match).sort(sortFn);
   RES = res; shown = 0; $('#list').innerHTML = ''; more();
   $('#empty').hidden = res.length > 0;
-  $('#count').textContent = `找到 ${res.length} 筆補助`;
+  $('#count').textContent = state.q ? `「${qEl.value.trim()}」找到 ${res.length} 筆補助${statusTouched?'':'（含已截止）'}` : `找到 ${res.length} 筆補助`;
 }
 $('#list').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) openModal(+c.dataset.id); });
 $('#list').addEventListener('keydown', e => { if (e.key==='Enter'){ const c = e.target.closest('.card'); if (c) openModal(+c.dataset.id); }});
@@ -146,7 +155,7 @@ render();
 function setMode(m){
   MODE = m; document.querySelectorAll('#kindToggle .chip').forEach(b => b.classList.toggle('on', b.dataset.k === m));
   items = m === '歷史' ? HIST : CUR;
-  state.status = m === '歷史' ? new Set() : new Set(['開放中','即將開放','常態性/依公告']);
+  statusTouched = false; state.status = m === '歷史' ? new Set() : new Set(['開放中','即將開放','常態性/依公告']);
   state.level.clear(); state.targets.clear(); state.region=''; state.org=''; state.range='all';
   buildChips('status', ['開放中','即將開放','常態性/依公告','已截止','歷史(已結束)']); buildChips('level', ['中央','縣市','鄉鎮市','民間/其他']); buildChips('targets');
   fillSelect($('#region'), 'region'); fillSelect($('#org'), 'org'); $('#region').value=''; $('#org').value='';

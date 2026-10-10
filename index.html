@@ -6,7 +6,7 @@
 <title>補助王｜台灣政府補助一站查詢</title>
 <meta name="description" content="補助王：彙整中央部會、縣市政府與鄉鎮市公所補助計畫，依截止日排序，快速找到適合你的補助。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=202610101648">
 </head>
 <body>
 <header class="hero">
@@ -16,7 +16,8 @@
     <p class="sub">彙整中央部會、22 縣市政府與鄉鎮市公所的補助計畫，依截止日一目了然。</p>
     <div class="bignum">全台補助資料庫・共收錄 <b id="grandTotal">—</b> 筆<span class="bignum-sub">現行 <span id="curTotal">—</span> ｜ 歷史（109–115年）<span id="histTotal">—</span></span></div>
     <div class="searchbar">
-      <input id="q" type="search" placeholder="搜尋補助名稱、主辦單位、對象或關鍵字（例：SBIR、數位轉型、雲林）" autocomplete="off">
+      <input id="q" type="search" placeholder="搜尋補助名稱、主辦單位、對象或關鍵字（例：SBIR、數位轉型、雲林）" autocomplete="off" enterkeyhint="search">
+      <button id="qBtn" type="button" class="qbtn">搜尋</button>
     </div>
     <div class="stats" id="stats"></div>
     <div class="chips" id="kindToggle" style="justify-content:center;margin-top:8px"><button class="chip on" data-k="現行">現行補助</button><button class="chip" data-k="歷史">歷史紀錄（109–115年）</button></div>
@@ -79,8 +80,8 @@
   </div>
 </div>
 
-<script src="data.js"></script>
-<script src="app.js"></script>
+<script src="data.js?v=202610101648"></script>
+<script src="app.js?v=202610101648"></script>
 <script>(function(){var d=window.BZW_DATA||{};var c=d.count||0,h=d.histCount||0,f=function(n){return n.toLocaleString("zh-TW")};var g=document.getElementById("grandTotal");if(g){g.textContent=f(c+h);document.getElementById("curTotal").textContent=f(c);document.getElementById("histTotal").textContent=f(h);}})();</script>
 </body>
 </html>
