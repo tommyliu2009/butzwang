@@ -151,10 +151,23 @@ function setMode(m){
   fillSelect($('#region'), 'region'); fillSelect($('#org'), 'org'); $('#region').value=''; $('#org').value='';
   $('#total').textContent = items.length; render();
 }
+const HY = DATA.histYears || {}; const YRS = Object.keys(HY).sort().reverse(); let curYear = YRS[0];
+const yt = $('#yearToggle');
+yt.innerHTML = YRS.map(y => `<button class="chip" data-y="${y}">${y}年<small>${HY[y]}</small></button>`).join('') + `<button class="chip" data-y="all">全部年度<small>${Object.values(HY).reduce((a,b)=>a+b,0)}</small></button>`;
+function loadYears(ys, cb){
+  const need = ys.filter(y => !(window.BZW_HIST && window.BZW_HIST[y])); let left = need.length; if (!left) return cb();
+  $('#count').textContent = '歷史資料載入中…';
+  need.forEach(y => { const s = document.createElement('script'); s.src = `data_hist_${y}.js`; s.onload = () => { if (--left === 0) cb(); }; document.body.appendChild(s); });
+}
+function showYear(y){
+  curYear = y; yt.querySelectorAll('.chip').forEach(b => b.classList.toggle('on', b.dataset.y === y));
+  const ys = y === 'all' ? YRS : [y];
+  loadYears(ys, () => { HIST = ys.flatMap(k => window.BZW_HIST[k]).map(x => prep({targets:['其他'], status:'歷史(已結束)', ...x})); setMode('歷史'); });
+}
+yt.addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) showYear(b.dataset.y); });
 $('#kindToggle').addEventListener('click', e => { const b = e.target.closest('.chip'); if (!b || b.dataset.k === MODE) return;
-  if (b.dataset.k === '歷史' && !HIST) { b.textContent = '載入中…'; const s = document.createElement('script'); s.src = 'data_hist.js';
-    s.onload = () => { HIST = window.BZW_HIST.map(x => prep({targets:['其他'], status:'歷史(已結束)', ...x})); b.textContent = `歷史紀錄（113–115年，${HIST.length}筆）`; setMode('歷史'); };
-    document.body.appendChild(s); return; }
-  setMode(b.dataset.k); });
+  yt.hidden = b.dataset.k !== '歷史';
+  if (b.dataset.k === '歷史') return showYear(curYear);
+  setMode('現行'); });
 if (location.hash === '#history') document.querySelector('#kindToggle .chip[data-k="歷史"]').click();
 })();

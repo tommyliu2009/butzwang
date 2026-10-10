@@ -106,8 +106,14 @@ with open(OUT, 'w', encoding='utf-8') as f:
     json.dump(out, f, ensure_ascii=False, indent=1)
 with open(OUT[:-2], 'w', encoding='utf-8') as f:
     f.write('window.BZW_DATA=' + json.dumps(out, ensure_ascii=False) + ';')
-hp = os.path.join(os.path.dirname(OUT), 'data_hist.js')
-with open(hp, 'w', encoding='utf-8') as f:
-    f.write('window.BZW_HIST=' + json.dumps(hist, ensure_ascii=False, separators=(',',':')) + ';')
+import glob as _g
+for old in _g.glob(os.path.join(os.path.dirname(OUT), 'data_hist*.js')): os.remove(old)
+years = sorted({h.get('year','') for h in hist if h.get('year')}, reverse=True)
+for y in years:
+    with open(os.path.join(os.path.dirname(OUT), f'data_hist_{y}.js'), 'w', encoding='utf-8') as f:
+        f.write('(window.BZW_HIST=window.BZW_HIST||{})[%s]=' % json.dumps(y) + json.dumps([h for h in hist if h.get('year')==y], ensure_ascii=False, separators=(',',':')) + ';')
+out['histYears'] = {y: sum(1 for h in hist if h.get('year')==y) for y in years}
+with open(OUT[:-2], 'w', encoding='utf-8') as f:
+    f.write('window.BZW_DATA=' + json.dumps(out, ensure_ascii=False) + ';')
 rows = cur
 print(f'wrote {OUT} ({len(cur)} current, {len(hist)} history, generated {gen})')
