@@ -100,3 +100,4 @@ select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:10
 .bignum b{font-size:40px;color:#e8590c;margin:0 6px;letter-spacing:1px}
 .bignum-sub{display:block;font-size:14px;font-weight:500;color:#666;margin-top:2px}
 @media (max-width:860px){.bignum{font-size:16px}.bignum b{font-size:30px}}
+.bignum b{font-size:inherit !important;margin:0 4px}
