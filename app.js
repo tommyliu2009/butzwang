@@ -50,6 +50,7 @@ qEl.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) 
 const qBtn = $('#qBtn'); if (qBtn) qBtn.addEventListener('click', doSearch);
 // 頁面載入前已輸入的字也要算
 if (qEl.value.trim()) state.q = qEl.value.trim().toLowerCase();
+{ const u = new URLSearchParams(location.search).get('q'); if (u) { qEl.value = u; state.q = u.trim().toLowerCase(); } }
 $('#reset').onclick = () => { state.status.clear(); state.level.clear(); state.targets.clear(); state.range='all'; state.region=''; state.org=''; state.q=''; statusTouched=false;
   $('#q').value=''; $('#region').value=''; $('#org').value=''; render(); };
 $('#openFilters').onclick = () => $('#filters').classList.add('open');

@@ -1,0 +1,43 @@
+# 補助王（subsidyking.tw）
+> 補助王彙整台灣中央部會、縣市政府與鄉鎮市公所的補助計畫，現行 3,023 筆、歷史（109–115 年）45,662 筆，可依截止日、主辦層級、補助對象與地區查詢，並推估週期性補助的下次開放時間。
+
+維護者：仁禾管理顧問 劉靜渡（tommyliu2009@gmail.com，LINE ID：tommyliu2009）。資料來源：中央部會、22 縣市政府與鄉鎮市公所官網公告，以及政府新聞稿與公開彙整平台。最近更新：2026-10-16 02:44（台北時間）。
+
+## 主要頁面
+- [補助搜尋首頁](https://www.subsidyking.tw/)：可依關鍵字、狀態、主辦層級、補助對象、地區篩選；支援 https://www.subsidyking.tw/?q=關鍵字
+- [開放中與即將開放的補助](https://www.subsidyking.tw/open.html)：113 筆
+- [全部現行補助](https://www.subsidyking.tw/list.html)：3,023 筆靜態清單
+- [常見問答](https://www.subsidyking.tw/faq.html)
+- [關於補助王與資料來源](https://www.subsidyking.tw/about.html)
+- [完整說明（llms-full.txt）](https://www.subsidyking.tw/llms-full.txt)
+
+## 依地區
+- [全國](https://www.subsidyking.tw/r/%E5%85%A8%E5%9C%8B.html)
+- [臺北](https://www.subsidyking.tw/r/%E8%87%BA%E5%8C%97.html)
+- [臺中](https://www.subsidyking.tw/r/%E8%87%BA%E4%B8%AD.html)
+- [高雄](https://www.subsidyking.tw/r/%E9%AB%98%E9%9B%84.html)
+- [金門](https://www.subsidyking.tw/r/%E9%87%91%E9%96%80.html)
+- [臺南](https://www.subsidyking.tw/r/%E8%87%BA%E5%8D%97.html)
+- [雲林](https://www.subsidyking.tw/r/%E9%9B%B2%E6%9E%97.html)
+- [花蓮](https://www.subsidyking.tw/r/%E8%8A%B1%E8%93%AE.html)
+- [南投](https://www.subsidyking.tw/r/%E5%8D%97%E6%8A%95.html)
+- [彰化](https://www.subsidyking.tw/r/%E5%BD%B0%E5%8C%96.html)
+- [嘉義市](https://www.subsidyking.tw/r/%E5%98%89%E7%BE%A9%E5%B8%82.html)
+- [基隆](https://www.subsidyking.tw/r/%E5%9F%BA%E9%9A%86.html)
+- [新北](https://www.subsidyking.tw/r/%E6%96%B0%E5%8C%97.html)
+- [嘉義縣](https://www.subsidyking.tw/r/%E5%98%89%E7%BE%A9%E7%B8%A3.html)
+- [連江](https://www.subsidyking.tw/r/%E9%80%A3%E6%B1%9F.html)
+- [新竹市](https://www.subsidyking.tw/r/%E6%96%B0%E7%AB%B9%E5%B8%82.html)
+- [苗栗](https://www.subsidyking.tw/r/%E8%8B%97%E6%A0%97.html)
+- [新竹](https://www.subsidyking.tw/r/%E6%96%B0%E7%AB%B9.html)
+
+## 依補助對象
+- [其他](https://www.subsidyking.tw/t/%E5%85%B6%E4%BB%96.html)
+- [個人/青年](https://www.subsidyking.tw/t/%E5%80%8B%E4%BA%BA_%E9%9D%92%E5%B9%B4.html)
+- [學校/研究](https://www.subsidyking.tw/t/%E5%AD%B8%E6%A0%A1_%E7%A0%94%E7%A9%B6.html)
+- [企業](https://www.subsidyking.tw/t/%E4%BC%81%E6%A5%AD.html)
+- [民間團體](https://www.subsidyking.tw/t/%E6%B0%91%E9%96%93%E5%9C%98%E9%AB%94.html)
+- [政府機關](https://www.subsidyking.tw/t/%E6%94%BF%E5%BA%9C%E6%A9%9F%E9%97%9C.html)
+
+## 姊妹站
+- [標案王 bidking.tw](https://www.bidking.tw/)：台灣政府標案搜尋
