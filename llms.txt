@@ -1,12 +1,12 @@
 # 補助王（subsidyking.tw）
-> 補助王彙整台灣中央部會、縣市政府與鄉鎮市公所的補助計畫，現行 3,028 筆、歷史（109–115 年）45,662 筆，可依截止日、主辦層級、補助對象與地區查詢，並推估週期性補助的下次開放時間。
+> 補助王彙整台灣中央部會、縣市政府與鄉鎮市公所的補助計畫，現行 3,035 筆、歷史（109–115 年）45,662 筆，可依截止日、主辦層級、補助對象與地區查詢，並推估週期性補助的下次開放時間。
 
-維護者：仁禾管理顧問 劉靜渡（tommyliu2009@gmail.com，LINE ID：tommyliu2009）。資料來源：中央部會、22 縣市政府與鄉鎮市公所官網公告，以及政府新聞稿與公開彙整平台。最近更新：2026-10-17 02:44（台北時間）。
+維護者：仁禾管理顧問 劉靜渡（tommyliu2009@gmail.com，LINE ID：tommyliu2009）。資料來源：中央部會、22 縣市政府與鄉鎮市公所官網公告，以及政府新聞稿與公開彙整平台。最近更新：2026-10-18 02:44（台北時間）。
 
 ## 主要頁面
 - [補助搜尋首頁](https://www.subsidyking.tw/)：可依關鍵字、狀態、主辦層級、補助對象、地區篩選；支援 https://www.subsidyking.tw/?q=關鍵字
-- [開放中與即將開放的補助](https://www.subsidyking.tw/open.html)：117 筆
-- [全部現行補助](https://www.subsidyking.tw/list.html)：3,028 筆靜態清單
+- [開放中與即將開放的補助](https://www.subsidyking.tw/open.html)：124 筆
+- [全部現行補助](https://www.subsidyking.tw/list.html)：3,035 筆靜態清單
 - [常見問答](https://www.subsidyking.tw/faq.html)
 - [關於補助王與資料來源](https://www.subsidyking.tw/about.html)
 - [完整說明（llms-full.txt）](https://www.subsidyking.tw/llms-full.txt)
