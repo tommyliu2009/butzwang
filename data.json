@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-18 02:44",
- "count": 3035,
+ "generated": "2026-10-19 02:51",
+ "count": 3037,
  "histCount": 45662,
  "items": [
   {
@@ -82598,6 +82598,60 @@
    "notes": "https://www.mohw.gov.tw/",
    "year": "115",
    "parent": "補助布建全方位牙醫醫院計畫",
+   "kind": "現行"
+  },
+  {
+   "id": 48698,
+   "name": "116年度高教深耕計畫完善就學協助機制",
+   "org": "教育部",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2026-11-13",
+   "deadlineText": "2026-11-13",
+   "target": "各公私立大學校院（不含技術校院及空大）",
+   "targets": [
+    "學校/研究"
+   ],
+   "summary": "補助公立大學提升不利學生入學機會及就學協助；115/10/6至11/13受理，計畫書紙本1式2份送教育部；總經費約4億。",
+   "url": "https://www.edu.tw/News_Content.aspx?n=8DA931302D1852A3&sms=F87394FD43CD901F&s=908505D194947809",
+   "sourceType": "教育部官網",
+   "firstSeen": "2026-10-19",
+   "updated": "2026-10-19",
+   "verified": "2026-10-19",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "2027-10（依公告）",
+   "notes": "https://www.edu.tw/News.aspx?n=8DA931302D1852A3&sms=F87394FD43CD901F",
+   "year": "116",
+   "parent": "高教深耕計畫",
+   "kind": "現行"
+  },
+  {
+   "id": 48699,
+   "name": "116學年度教育部獎勵私立大學校院校務發展計畫",
+   "org": "教育部",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2027-01-27",
+   "deadlineText": "2027-01-27",
+   "target": "本部主管之私立大學校院（境外分校分部不適用）",
+   "targets": [
+    "學校/研究"
+   ],
+   "summary": "協助私立大學提升教育品質與特色發展；申請至116/1/27截止，書面審查；全案預算概估30.7億，補助占30%、獎勵占70%。",
+   "url": "https://www.edu.tw/News_Content.aspx?n=8DA931302D1852A3&sms=F87394FD43CD901F&s=0F5FEF14E32ABB75",
+   "sourceType": "教育部官網",
+   "firstSeen": "2026-10-19",
+   "updated": "2026-10-19",
+   "verified": "2026-10-19",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "2028-01（依公告）",
+   "notes": "https://edu.law.moe.gov.tw/LawContent.aspx?id=FL046021",
+   "year": "116",
+   "parent": "教育部獎勵私立大學校院校務發展計畫要點",
    "kind": "現行"
   }
  ]
