@@ -13,7 +13,7 @@ st=collections.Counter(i['status'] for i in IT); lv=collections.Counter(i['level
 OPEN=sorted([i for i in IT if i['status'] in ('開放中','即將開放')],key=lambda i:i.get('deadline') or '9999')
 SRC='中央部會、22 縣市政府與鄉鎮市公所官網公告，以及政府新聞稿與公開彙整平台'
 DESC=f'補助王彙整台灣中央部會、縣市政府與鄉鎮市公所的補助計畫，現行 {C:,} 筆、歷史（109–115 年）{H:,} 筆，可依截止日、主辦層級、補助對象與地區查詢，並推估週期性補助的下次開放時間。'
-AD='<div class="adbox"><b>補助、標案、商業模式顧問</b><br><b>仁禾管理顧問</b><br><a href="mailto:renhe74123@gmail.com">renhe74123@gmail.com</a><br><a href="https://line.me/R/ti/p/@891tcxhu" target="_blank" rel="noopener">LINE 官方帳號：@891tcxhu</a></div>'
+AD='<div class="adbox"><b>仁禾管理顧問</b><br><a href="mailto:renhe74123@gmail.com">renhe74123@gmail.com</a><br><a href="https://line.me/R/ti/p/@891tcxhu" target="_blank" rel="noopener">LINE 官方帳號：@891tcxhu</a></div>'
 CSS='''<style>body{margin:0;font-family:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;color:#1f2933;background:#f6f7f9;line-height:1.6}a{color:#e8590c}.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
 .top{background:linear-gradient(135deg,#fff4e6,#ffe8cc 55%,#fff9db);border-bottom:1px solid #ffd8a8;padding:14px 0 18px}.hd{display:flex;gap:16px;align-items:flex-start;justify-content:space-between}
 .brand{font-weight:800;color:#e8590c;text-decoration:none;font-size:20px}h1{font-size:26px;margin:8px 0 4px}.crumb{font-size:13px;color:#6b7785}.lead{color:#5c4a3a;margin:4px 0 0}
@@ -58,7 +58,7 @@ FAQ=[('補助王是什麼？',f'補助王（www.subsidyking.tw）是仁禾管理
  ('使用補助王要付費嗎？','查詢完全免費，不需註冊。'),
  ('需要補助申請或計畫書撰寫協助，可以找誰？','可以聯絡網站維護者仁禾管理顧問：Email renhe74123@gmail.com，LINE 官方帳號：@891tcxhu。')]
 mk('/faq.html','補助王常見問答：資料來源、更新頻率與補助申請｜補助王','補助王常見問題：資料來源、更新頻率、目前開放中的補助、預估下次開放的算法與申請協助。','常見問答',f'關於補助王最常被問到的 {len(FAQ)} 個問題。',''.join(f'<div class="card"><h2>{esc(q)}</h2><p>{esc(a)}</p></div>' for q,a in FAQ))
-mk('/about.html','關於補助王：資料來源與維護者仁禾管理顧問｜補助王','補助王由仁禾管理顧問劉靜渡建置維護，彙整政府官網補助公告，說明收錄範圍、更新頻率與聯絡方式。','關於補助王',f'補助王由仁禾管理顧問（劉靜渡）建置與維護，收錄現行 {C:,} 筆、歷史 {H:,} 筆補助。',
+mk('/about.html','關於補助王：資料來源與維護者仁禾管理顧問｜補助王','補助王由仁禾管理顧問建置維護，彙整政府官網補助公告，說明收錄範圍、更新頻率與聯絡方式。','關於補助王',f'補助王由仁禾管理顧問建置與維護，收錄現行 {C:,} 筆、歷史 {H:,} 筆補助。',
  f'<div class="card"><h2>網站介紹</h2><p>{esc(DESC)}</p></div><div class="card"><h2>資料來源</h2><ul><li>{SRC}。</li><li>收錄範圍：現行補助 {C:,} 筆；歷史紀錄 109–115 年 {H:,} 筆。</li><li>更新頻率：每天凌晨自動更新。</li><li>實際申請資格、金額與期限以主辦單位公告為準。</li></ul></div>'
  '<div class="card"><h2>維護者</h2><p><b>仁禾管理顧問</b><br>Email：<a href="mailto:renhe74123@gmail.com">renhe74123@gmail.com</a><br>LINE 官方帳號：<a href="https://line.me/R/ti/p/@891tcxhu">@891tcxhu</a><br>服務：政府補助申請、計畫書撰寫、政府標案投標策略、商業模式顧問。</p><p>姊妹站：<a href="https://www.bidking.tw/">標案王（台灣政府標案搜尋）</a></p></div>')
 ORG=geo.org(BASE); WEB=geo.website(BASE,NAME,DESC,BASE+'/?q={search_term_string}')
@@ -70,7 +70,7 @@ def gs(i):
 def dataset(url,name,desc):
     return {'@type':'Dataset','@id':url+'#dataset','name':name,'description':desc+' 資料彙整自政府官網公告，由補助王整理，每日更新。','url':url,'inLanguage':'zh-Hant-TW','creator':{'@id':BASE+'/#org'},'publisher':{'@id':BASE+'/#org'},
             'dateModified':NOW.isoformat(timespec='minutes')+'+08:00','spatialCoverage':{'@type':'Place','name':'臺灣'},'isAccessibleForFree':True,'keywords':['政府補助','補助計畫','SBIR','台灣']}
-SUMSRC=f'資料更新：{GEN}（台北時間）｜來源：政府官網公告｜維護：仁禾管理顧問 劉靜渡'
+SUMSRC=f'資料更新：{GEN}（台北時間）｜來源：政府官網公告｜維護：仁禾管理顧問'
 STATE='/workspace/butzwang_tools/geo_lastmod.json'; LM=json.load(open(STATE)) if os.path.exists(STATE) else {}
 SM=[]
 for p in ['index.html','open.html','list.html','faq.html','about.html']+sorted(x[2:] for x in glob.glob('./r/*.html')+glob.glob('./t/*.html')):
