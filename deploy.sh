@@ -3,6 +3,7 @@
 # 用法：./deploy.sh [CSV路徑]   (預設 /workspace/subsidy/補助資料庫.csv)
 set -euo pipefail
 cd "$(dirname "$0")"
+source /workspace/handoff/repo_lock.sh butzwang butzwang   # 程式鎖＋AI 鎖（RULES §7、§14，2026-10-20）
 CSV="${1:-/workspace/subsidy/補助資料庫_full.csv}"
 python3 build_site.py "$CSV"
 python3 build_geo.py || echo "GEO 優化（JSON-LD／靜態清單／llms.txt／sitemap）產生失敗或驗證有誤，請檢查"
