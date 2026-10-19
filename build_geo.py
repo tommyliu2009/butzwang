@@ -13,7 +13,7 @@ st=collections.Counter(i['status'] for i in IT); lv=collections.Counter(i['level
 OPEN=sorted([i for i in IT if i['status'] in ('開放中','即將開放')],key=lambda i:i.get('deadline') or '9999')
 SRC='中央部會、22 縣市政府與鄉鎮市公所官網公告，以及政府新聞稿與公開彙整平台'
 DESC=f'補助王彙整台灣中央部會、縣市政府與鄉鎮市公所的補助計畫，現行 {C:,} 筆、歷史（109–115 年）{H:,} 筆，可依截止日、主辦層級、補助對象與地區查詢，並推估週期性補助的下次開放時間。'
-AD='<div class="adbox"><b>補助、標案、商業模式顧問</b><br><b>仁禾管理顧問</b><br><b>劉靜渡</b><br><a href="mailto:tommyliu2009@gmail.com">tommyliu2009@gmail.com</a><br><a href="https://line.me/R/ti/p/@891tcxhu" target="_blank" rel="noopener">LINE 官方帳號：@891tcxhu</a></div>'
+AD='<div class="adbox"><b>補助、標案、商業模式顧問</b><br><b>仁禾管理顧問</b><br><a href="mailto:renhe74123@gmail.com">renhe74123@gmail.com</a><br><a href="https://line.me/R/ti/p/@891tcxhu" target="_blank" rel="noopener">LINE 官方帳號：@891tcxhu</a></div>'
 CSS='''<style>body{margin:0;font-family:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;color:#1f2933;background:#f6f7f9;line-height:1.6}a{color:#e8590c}.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
 .top{background:linear-gradient(135deg,#fff4e6,#ffe8cc 55%,#fff9db);border-bottom:1px solid #ffd8a8;padding:14px 0 18px}.hd{display:flex;gap:16px;align-items:flex-start;justify-content:space-between}
 .brand{font-weight:800;color:#e8590c;text-decoration:none;font-size:20px}h1{font-size:26px;margin:8px 0 4px}.crumb{font-size:13px;color:#6b7785}.lead{color:#5c4a3a;margin:4px 0 0}
@@ -56,11 +56,11 @@ FAQ=[('補助王是什麼？',f'補助王（www.subsidyking.tw）是仁禾管理
  ('「預估下次開放」怎麼算？','依同一計畫過去幾年的公告與截止月份推算，例如每年約 3 月公告、5 月截止，僅供提前準備參考。'),
  ('企業可以申請哪些補助？',f'補助對象為企業的現行計畫約 {sum("企業" in i["targets"] for i in IT)} 筆，常見如 SBIR、SIIR、地方型 SBIR、數位轉型與節能補助，可在「補助對象：企業」頁查看。'),
  ('使用補助王要付費嗎？','查詢完全免費，不需註冊。'),
- ('需要補助申請或計畫書撰寫協助，可以找誰？','可以聯絡網站維護者仁禾管理顧問劉靜渡：Email tommyliu2009@gmail.com，LINE 官方帳號：@891tcxhu。')]
+ ('需要補助申請或計畫書撰寫協助，可以找誰？','可以聯絡網站維護者仁禾管理顧問：Email renhe74123@gmail.com，LINE 官方帳號：@891tcxhu。')]
 mk('/faq.html','補助王常見問答：資料來源、更新頻率與補助申請｜補助王','補助王常見問題：資料來源、更新頻率、目前開放中的補助、預估下次開放的算法與申請協助。','常見問答',f'關於補助王最常被問到的 {len(FAQ)} 個問題。',''.join(f'<div class="card"><h2>{esc(q)}</h2><p>{esc(a)}</p></div>' for q,a in FAQ))
 mk('/about.html','關於補助王：資料來源與維護者仁禾管理顧問｜補助王','補助王由仁禾管理顧問劉靜渡建置維護，彙整政府官網補助公告，說明收錄範圍、更新頻率與聯絡方式。','關於補助王',f'補助王由仁禾管理顧問（劉靜渡）建置與維護，收錄現行 {C:,} 筆、歷史 {H:,} 筆補助。',
  f'<div class="card"><h2>網站介紹</h2><p>{esc(DESC)}</p></div><div class="card"><h2>資料來源</h2><ul><li>{SRC}。</li><li>收錄範圍：現行補助 {C:,} 筆；歷史紀錄 109–115 年 {H:,} 筆。</li><li>更新頻率：每天凌晨自動更新。</li><li>實際申請資格、金額與期限以主辦單位公告為準。</li></ul></div>'
- '<div class="card"><h2>維護者</h2><p><b>仁禾管理顧問</b>　負責人：<b>劉靜渡</b><br>Email：<a href="mailto:tommyliu2009@gmail.com">tommyliu2009@gmail.com</a><br>LINE 官方帳號：<a href="https://line.me/R/ti/p/@891tcxhu">@891tcxhu</a><br>服務：政府補助申請、計畫書撰寫、政府標案投標策略、商業模式顧問。</p><p>姊妹站：<a href="https://www.bidking.tw/">標案王（台灣政府標案搜尋）</a></p></div>')
+ '<div class="card"><h2>維護者</h2><p><b>仁禾管理顧問</b><br>Email：<a href="mailto:renhe74123@gmail.com">renhe74123@gmail.com</a><br>LINE 官方帳號：<a href="https://line.me/R/ti/p/@891tcxhu">@891tcxhu</a><br>服務：政府補助申請、計畫書撰寫、政府標案投標策略、商業模式顧問。</p><p>姊妹站：<a href="https://www.bidking.tw/">標案王（台灣政府標案搜尋）</a></p></div>')
 ORG=geo.org(BASE); WEB=geo.website(BASE,NAME,DESC,BASE+'/?q={search_term_string}')
 def gs(i):
     g={'@type':'GovernmentService','name':i['name'],'provider':{'@type':'GovernmentOrganization','name':i['org']},'areaServed':{'@type':'Place','name':'臺灣' if i['region']=='全國' else i['region']},'serviceType':'政府補助','url':i['url']}
@@ -103,7 +103,7 @@ for p in ['index.html','open.html','list.html','faq.html','about.html']+sorted(x
     SM.append((url,LM[p][1]))
 json.dump(LM,open(STATE,'w'))
 open('sitemap.xml','w').write(geo.sitemap(SM)); open('robots.txt','w').write(geo.robots(BASE))
-L=['# 補助王（subsidyking.tw）',f'> {DESC}','',f'維護者：仁禾管理顧問 劉靜渡（tommyliu2009@gmail.com，LINE 官方帳號：@891tcxhu）。資料來源：{SRC}。最近更新：{GEN}（台北時間）。','','## 主要頁面',
+L=['# 補助王（subsidyking.tw）',f'> {DESC}','',f'維護者：仁禾管理顧問（renhe74123@gmail.com，LINE 官方帳號：@891tcxhu）。資料來源：{SRC}。最近更新：{GEN}（台北時間）。','','## 主要頁面',
    f'- [補助搜尋首頁]({BASE}/)：可依關鍵字、狀態、主辦層級、補助對象、地區篩選；支援 {BASE}/?q=關鍵字',f'- [開放中與即將開放的補助]({BASE}/open.html)：{st["開放中"]+st["即將開放"]} 筆',f'- [全部現行補助]({BASE}/list.html)：{C:,} 筆靜態清單',
    f'- [常見問答]({BASE}/faq.html)',f'- [關於補助王與資料來源]({BASE}/about.html)',f'- [完整說明（llms-full.txt）]({BASE}/llms-full.txt)','','## 依地區']+[f'- [{r}]({BASE}/r/{urllib.parse.quote(slug(r))}.html)' for r in REG]+['','## 依補助對象']+[f'- [{t}]({BASE}/t/{urllib.parse.quote(slug(t))}.html)' for t in TGT]+['','## 姊妹站','- [標案王 bidking.tw](https://www.bidking.tw/)：台灣政府標案搜尋']
 open('llms.txt','w').write('\n'.join(L)+'\n')
