@@ -99,6 +99,8 @@ for p in ['index.html','open.html','list.html','faq.html','about.html']+sorted(x
         m=re.search(r'<p class="lead">(.*?)</p>',h,re.S); lead=re.sub(r'<[^>]+>','',m.group(1)).strip() if m else ''
         s=esc(desc+(' '+lead if lead and lead not in desc else ''))+' '+esc(SUMSRC)+'。'
     h,_,_=geo.inject(h,url,g,s,NAME,sum_after=('<!--before-main-->' if p=='index.html' else '</header>'),og_image=BASE+'/og.png')
+    GSV='<meta name="google-site-verification" content="ErUscDsKVvX8bVYiyhEri1tvmhr2MGhbv_2QcA6Hn3s">'
+    if p=='index.html' and GSV not in h: h=h.replace('</head>',GSV+'\n</head>',1)  # Google Search Console 驗證（2026-10-24）
     open(p,'w',encoding='utf-8').write(h)
     key=hashlib.md5(re.sub(r'\d{4}[-/]\d{2}[-/]\d{2}[ T]?\d{0,2}:?\d{0,2}|\d{1,2}:\d{2}','',h).encode()).hexdigest()
     if LM.get(p,[None])[0]!=key: LM[p]=[key,TODAY]
