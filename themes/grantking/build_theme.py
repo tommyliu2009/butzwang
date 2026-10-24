@@ -41,10 +41,10 @@ def page(path,title,desc,body,graph=(),trail=None,lead=''):
 <link rel="canonical" href="{BASE}{path}"><meta property="og:type" content="website"><meta property="og:site_name" content="{NAME}"><meta property="og:locale" content="zh_TW">
 <meta property="og:title" content="{E(title)}"><meta property="og:description" content="{E(desc)}"><meta property="og:url" content="{BASE}{path}"><meta property="og:image" content="{BASE}/og.png">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{BASE}/og.png">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='8' fill='%238b6937'/%3E%3Ctext x='32' y='29' font-size='24' font-weight='900' fill='white' text-anchor='middle' font-family='sans-serif'%3E補%3C/text%3E%3Ctext x='32' y='55' font-size='24' font-weight='900' fill='white' text-anchor='middle' font-family='sans-serif'%3E助%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="/gk.css?v={hashlib.md5(open(H+'/gk.css','rb').read()).hexdigest()[:6]}">{ld(*g)}</head><body>
 <div class="util"><div class="in"><span>臺灣公部門獎勵・補助計畫整理平台</span><span>資料更新 {E(GEN)}（台北時間）</span></div></div>
-<header class="mast"><div class="in"><a class="logo" href="/"><span class="seal">獎</span><span><b>{NAME}</b><small>GRANT &amp; AWARD DIRECTORY</small></span></a>{AD}</div>
+<header class="mast"><div class="in"><a class="logo" href="/"><span class="seal" aria-hidden="true"><i>補</i><i>助</i></span><span><b>{NAME}</b><small>GRANT &amp; AWARD DIRECTORY</small></span></a>{AD}</div>
 <nav class="menu"><div class="in">{nav}</div></nav></header>
 <main class="in body">{('<div class="crumb">'+vis+'</div>') if vis else ''}{('<h1>'+E(title.split(' – ')[0])+'</h1>') if path!='/' else ''}{('<p class="lead">'+lead+'</p>') if lead else ''}{body}</main>
 <footer class="foot"><div class="in cols"><div><b>{NAME}</b><p>以主管機關、申請對象與截止日期三種角度整理臺灣中央與地方的獎補助公告，協助企業與團體掌握申請時機。</p></div>
