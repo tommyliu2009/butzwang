@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-24 02:48",
- "count": 3045,
+ "generated": "2026-10-25 02:47",
+ "count": 3046,
  "histCount": 45662,
  "items": [
   {
@@ -82870,6 +82870,33 @@
    "notes": "公告：https://www.mohw.gov.tw/dl-102359-e0ca476e-9580-4391-9ef8-b1e5047d6527.html；實施計畫：https://www.mohw.gov.tw/dl-102360-a19e3acd-0a8b-40d1-b260-b4022d401624.html；115/9/8公告，10/24補漏收錄",
    "year": "115",
    "parent": "醫院辦理住院整合照護服務實施計畫",
+   "kind": "現行"
+  },
+  {
+   "id": 48708,
+   "name": "116年健康促進學校特色獎勵競賽",
+   "org": "衛生福利部國民健康署（社區健康組）、教育部國民及學前教育署",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2027-01-22",
+   "deadlineText": "2027-01-22",
+   "target": "各縣市衛生局、全國高級中等以下學校、健康促進學校推動人員",
+   "targets": [
+    "學校/研究"
+   ],
+   "summary": "表揚健康促進學校推動成效；設縣市協力推動獎、卓越獎、特色獎及個人卓越貢獻獎，卓越金質獎每校6萬元等值獎品；報名至116/1/22，屬獎項非經費補助。",
+   "url": "https://www.hpa.gov.tw/Pages/Detail.aspx?nodeid=129&pid=20415",
+   "sourceType": "國健署官網（本署公告）",
+   "firstSeen": "2026-10-25",
+   "updated": "2026-10-25",
+   "verified": "2026-10-25",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "2027-10（依公告）",
+   "notes": "競賽辦法：https://www.hpa.gov.tw/Pages/ashx/GetFile.ashx?lang=c&type=1&sid=986332e090e24a68b5bd5d91e4a3faeb；115/10/19公告；縣市推派以電郵報名、特色獎可線上自由報名（限額）；書審資料另有截止日",
+   "year": "116",
+   "parent": "健康促進學校特色獎勵競賽",
    "kind": "現行"
   }
  ]
