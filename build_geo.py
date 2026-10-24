@@ -101,6 +101,8 @@ for p in ['index.html','open.html','list.html','faq.html','about.html']+sorted(x
     h,_,_=geo.inject(h,url,g,s,NAME,sum_after=('<!--before-main-->' if p=='index.html' else '</header>'),og_image=BASE+'/og.png')
     GSV='<meta name="google-site-verification" content="ErUscDsKVvX8bVYiyhEri1tvmhr2MGhbv_2QcA6Hn3s">'
     if p=='index.html' and GSV not in h: h=h.replace('</head>',GSV+'\n</head>',1)  # Google Search Console 驗證（2026-10-24）
+    GSV2='<meta name="google-site-verification" content="0BedvdNalE6p1-MomE406tZb19nNY53_bB14U-eRD7A">'
+    if p=='index.html' and GSV2 not in h: h=h.replace('</head>',GSV2+'\n</head>',1)  # 第二組 Google 驗證（2026-10-24）
     open(p,'w',encoding='utf-8').write(h)
     key=hashlib.md5(re.sub(r'\d{4}[-/]\d{2}[-/]\d{2}[ T]?\d{0,2}:?\d{0,2}|\d{1,2}:\d{2}','',h).encode()).hexdigest()
     if LM.get(p,[None])[0]!=key: LM[p]=[key,TODAY]
