@@ -93,10 +93,12 @@ for p in ['index.html','open.html','list.html','faq.html','about.html']+sorted(x
         s=(f'補助王收錄現行補助 <b>{C:,}</b> 筆（中央 {lv["中央"]:,}、縣市 {lv["縣市"]:,}）與歷史 109–115 年 {H:,} 筆；目前開放中 <b>{st["開放中"]}</b> 筆、即將開放 {st["即將開放"]} 筆。{SUMSRC}。'
            f'<details style="margin-top:6px"><summary>開放中與即將開放的補助（靜態清單 {min(40,len(OPEN))} 筆）</summary><ul>'+''.join(f'<li><a href="{esc(i["url"])}" target="_blank" rel="noopener">{esc(i["name"])}</a>｜{esc(i["org"])}｜{esc(i.get("deadlineText") or "依公告")}</li>' for i in OPEN[:40])+'</ul></details>'
            '<div style="margin-top:4px">'+'、'.join(f'<a href="{u}">{n}</a>' for u,n in NAVL[1:])+'</div>')
+        s+=('<details style="margin-top:6px"><summary><b>常見問答</b>（{min(6,len(FAQ))} 題，完整請見<a href="/faq.html">常見問答頁</a>）</summary>'+''.join(f'<p style="margin:6px 0"><b>Q：{esc(q)}</b><br>A：{esc(re.sub(r"<[^>]+>","",a))}</p>' for q,a in FAQ[:6])+'</details>'
+            '<div style="margin-top:6px"><b>關於本站／資料來源與更新頻率：</b>本站由仁禾管理顧問建置維護，資料取自各中央部會、22 縣市政府與相關機構官網公開的補助公告，每日自動更新；各筆資料均附原始公告連結，實際內容以主管機關公告為準。<a href="/about.html">了解更多</a></div>')
     else:
         m=re.search(r'<p class="lead">(.*?)</p>',h,re.S); lead=re.sub(r'<[^>]+>','',m.group(1)).strip() if m else ''
         s=esc(desc+(' '+lead if lead and lead not in desc else ''))+' '+esc(SUMSRC)+'。'
-    h,_,_=geo.inject(h,url,g,s,NAME,sum_after=('<!--before-main-->' if p=='index.html' else '</header>'))
+    h,_,_=geo.inject(h,url,g,s,NAME,sum_after=('<!--before-main-->' if p=='index.html' else '</header>'),og_image=BASE+'/og.png')
     open(p,'w',encoding='utf-8').write(h)
     key=hashlib.md5(re.sub(r'\d{4}[-/]\d{2}[-/]\d{2}[ T]?\d{0,2}:?\d{0,2}|\d{1,2}:\d{2}','',h).encode()).hexdigest()
     if LM.get(p,[None])[0]!=key: LM[p]=[key,TODAY]
