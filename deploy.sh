@@ -15,9 +15,10 @@ if grep -Eq 'GetGrant|日報|紀錄檔|週期性補助預測|彙整報告|202609
 fi
 git add -A
 if git diff --cached --quiet; then
-  echo "資料無變動，不需部署"; exit 0
+  echo "資料無變動，不需部署"; bash themes/grantking/deploy_gk.sh || echo "⚠️ 獎補助資訊網部署失敗"; exit 0
 fi
 git -c user.name="${GIT_NAME:-tommyliu2009}" -c user.email="${GIT_EMAIL:-tommyliu2009@users.noreply.github.com}" \
   commit -qm "資料更新 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
 git push -q origin main
 echo "已部署：$(git log -1 --format=%s)"
+bash themes/grantking/deploy_gk.sh || echo "⚠️ 獎補助資訊網部署失敗，請檢查"   # 獎補助資訊網（2026-10-24）
