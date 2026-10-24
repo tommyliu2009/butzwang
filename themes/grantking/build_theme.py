@@ -44,10 +44,10 @@ def page(path,title,desc,body,graph=(),trail=None,lead=''):
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='2' y='2' width='60' height='60' rx='8' fill='%238b6937'/%3E%3Ctext x='32' y='29' font-size='24' font-weight='900' fill='white' text-anchor='middle' font-family='sans-serif'%3E補%3C/text%3E%3Ctext x='32' y='55' font-size='24' font-weight='900' fill='white' text-anchor='middle' font-family='sans-serif'%3E助%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="/gk.css?v={hashlib.md5(open(H+'/gk.css','rb').read()).hexdigest()[:6]}">{ld(*g)}</head><body>
 <div class="util"><div class="in"><span>臺灣公部門獎勵・補助計畫整理平台</span><span>資料更新 {E(GEN)}（台北時間）</span></div></div>
-<header class="mast"><div class="in"><a class="logo" href="/"><span class="seal" aria-hidden="true"><i>補</i><i>助</i></span><span><b>{NAME}</b><small>GRANT &amp; AWARD DIRECTORY</small></span></a>{AD}</div>
+<header class="mast"><div class="in"><a class="logo" href="/"><span class="seal" aria-hidden="true"><i>補</i><i>助</i></span><span><b>{NAME}</b><small>Taiwan Grant &amp; Award Information</small></span></a>{AD}</div>
 <nav class="menu"><div class="in">{nav}</div></nav></header>
 <main class="in body">{('<div class="crumb">'+vis+'</div>') if vis else ''}{('<h1>'+E(title.split(' – ')[0])+'</h1>') if path!='/' else ''}{('<p class="lead">'+lead+'</p>') if lead else ''}{body}</main>
-<footer class="foot"><div class="in cols"><div><b>{NAME}</b><p>以主管機關、申請對象與截止日期三種角度整理臺灣中央與地方的獎補助公告，協助企業與團體掌握申請時機。</p></div>
+<footer class="foot"><div class="in cols"><div><b>{NAME}</b><small class="en">Taiwan Grant &amp; Award Information</small><p>以主管機關、申請對象與截止日期三種角度整理臺灣中央與地方的獎補助公告，協助企業與團體掌握申請時機。</p></div>
 <div><b>瀏覽</b>{''.join(f'<a href="{u}">{n}</a>' for u,n in MENU[1:6])}</div><div><b>說明</b>{''.join(f'<a href="{u}">{n}</a>' for u,n in MENU[6:])}<a href="/sitemap.xml">網站地圖</a></div></div>
 <div class="in copy">© {NAME}｜仁禾管理顧問　各計畫內容以主管機關正式公告為準。</div></footer></body></html>'''
     assert '劉靜渡' not in full
@@ -81,7 +81,7 @@ ABOUT=(f'<section class="box" id="about"><h2>關於本站・資料來源與更�
 OPEN=srt([i for i in IT if i['status'] in ('開放中','即將開放')])
 NEW=sorted(IT,key=lambda i:i.get('firstSeen') or '',reverse=True)[:10]
 DS='WebSite'
-web={"@type":"WebSite","@id":BASE+"/#site","url":BASE+"/","name":NAME,"inLanguage":"zh-Hant-TW","publisher":{"@id":BASE+"/#publisher"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":BASE+"/search.html?k={kw}"},"query-input":"required name=kw"}}
+web={"@type":"WebSite","@id":BASE+"/#site","url":BASE+"/","name":NAME,"alternateName":"Taiwan Grant & Award Information","inLanguage":"zh-Hant-TW","publisher":{"@id":BASE+"/#publisher"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":BASE+"/search.html?k={kw}"},"query-input":"required name=kw"}}
 dset={"@type":"Dataset","@id":BASE+"/#dataset","name":"臺灣公部門獎補助計畫目錄","description":f"整理臺灣中央與地方政府獎勵、補助計畫 {len(IT):,} 項，含主管機關、申請對象、收件截止日與狀態，每日更新。","url":BASE+"/","license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":True,"creator":{"@id":BASE+"/#publisher"},"dateModified":TODAY,"spatialCoverage":"臺灣","keywords":["獎補助","政府補助","獎勵計畫","補助申請"]}
 aud_counts=collections.Counter(t for i in IT for t in i.get('targets',[]))
 home=(f'<section class="band"><form action="/search.html"><label>快速搜尋獎補助</label><input name="k" placeholder="輸入關鍵字，例如：數位轉型、文化、青年創業"><button>搜尋</button></form></section>'
@@ -155,7 +155,7 @@ page('/about-data.html',f'關於本站與資料來源 – {NAME}',f'{NAME}的資
 # robots / sitemap / llms
 open(f'{OUT}/robots.txt','w').write(''.join(f'User-agent: {b}\nAllow: /\n\n' for b in ['GPTBot','OAI-SearchBot','ChatGPT-User','PerplexityBot','ClaudeBot','Claude-SearchBot','anthropic-ai','Google-Extended','Googlebot','Bingbot','Applebot-Extended','CCBot','meta-externalagent','Amazonbot','*'])+f'Sitemap: {BASE}/sitemap.xml\n')
 open(f'{OUT}/sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{BASE}{p}</loc><lastmod>{TODAY}</lastmod></url>\n' for p in pages)+'</urlset>\n')
-open(f'{OUT}/llms.txt','w').write(f'''# {NAME}（grantking.subsidyking.tw）
+open(f'{OUT}/llms.txt','w').write(f'''# {NAME}（Taiwan Grant & Award Information，grantking.subsidyking.tw）
 > 臺灣公部門獎勵與補助計畫目錄：以主管機關、申請對象與截止日期整理中央部會、縣市政府與鄉鎮市區公所的公告，現行 {len(IT):,} 項，每日清晨更新（最近：{GEN}，台北時間）。
 
 維運：仁禾管理顧問（renhe74123@gmail.com，LINE 官方帳號：@891tcxhu）。各計畫內容以主管機關公告為準。
