@@ -69,7 +69,7 @@ def gs(i):
     return g
 def dataset(url,name,desc):
     return {'@type':'Dataset','@id':url+'#dataset','name':name,'description':desc+' 資料彙整自政府官網公告，由補助王整理，每日更新。','url':url,'inLanguage':'zh-Hant-TW','creator':{'@id':BASE+'/#org'},'publisher':{'@id':BASE+'/#org'},
-            'dateModified':NOW.isoformat(timespec='minutes')+'+08:00','spatialCoverage':{'@type':'Place','name':'臺灣'},'isAccessibleForFree':True,'keywords':['政府補助','補助計畫','SBIR','台灣']}
+            'dateModified':NOW.isoformat(timespec='minutes')+'+08:00','spatialCoverage':{'@type':'Place','name':'臺灣'},'license':BASE+'/about.html','isAccessibleForFree':True,'keywords':['政府補助','補助計畫','SBIR','台灣']}
 SUMSRC=f'資料更新：{GEN}（台北時間）｜來源：政府官網公告｜維護：仁禾管理顧問'
 STATE='/workspace/butzwang_tools/geo_lastmod.json'; LM=json.load(open(STATE)) if os.path.exists(STATE) else {}
 SM=[]
