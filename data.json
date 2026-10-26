@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-26 02:52",
- "count": 3062,
+ "generated": "2026-10-27 02:42",
+ "count": 3064,
  "histCount": 45662,
  "items": [
   {
@@ -83339,6 +83339,60 @@
    "notes": "公告日115/1/1；列表頁公告，個別頁需瀏覽器（Cloudflare）",
    "year": "115",
    "parent": "雲林縣青年發展補助",
+   "kind": "現行"
+  },
+  {
+   "id": 48725,
+   "name": "薔琵颱風農業天然災害現金救助（新北、桃園、苗栗、臺中、彰化、南投、雲林、宜蘭、臺東9縣市）",
+   "org": "農業部",
+   "level": "中央",
+   "region": "新北、桃園、苗栗、臺中、彰化、南投、雲林、宜蘭、臺東",
+   "deadline": "2026-11-09",
+   "deadlineText": "2026-11-09",
+   "target": "公告救助地區內、公告品項損失率達20%以上之農林漁牧業者",
+   "targets": [
+    "企業"
+   ],
+   "summary": "農業部115/10/26公告9縣市納入現金救助及低利貸款，宜蘭縣農產業全品項；受災農民於10/27至11/9向土地所在地公所申請。品項詳附表。",
+   "url": "https://www.moa.gov.tw/theme_data.php?theme=news&sub_theme=agri&id=10324",
+   "sourceType": "農業部官網（農業新聞）",
+   "firstSeen": "2026-10-27",
+   "updated": "2026-10-27",
+   "verified": "2026-10-27",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "不定期（依災害）",
+   "nextOpen": "依災害公告",
+   "notes": "受理期限依農業天然災害救助辦法第12條（公告翌日起10個工作日）推算，苗栗縣府公告亦為10/27–11/9；地區品項附表：https://www.moa.gov.tw/redirect_files.php?id=61808",
+   "year": "115",
+   "parent": "農業天然災害救助",
+   "kind": "現行"
+  },
+  {
+   "id": 48726,
+   "name": "文化部116年推動文化藝術扎根計畫",
+   "org": "文化部",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2026-11-30",
+   "deadlineText": "2026-11-30",
+   "target": "財團法人、行政法人、社團法人",
+   "targets": [
+    "企業"
+   ],
+   "summary": "促成在地文化單位與藝術工作者合作，發掘在地文史並建立系統性扎根模式，以現地體驗內容帶動民眾認識在地藝文；即日起至115/11/30於文化部獎補助資訊網線上申請。",
+   "url": "https://www.moc.gov.tw/News_Content.aspx?n=105&s=263907",
+   "sourceType": "文化部官網（新聞）",
+   "firstSeen": "2026-10-27",
+   "updated": "2026-10-27",
+   "verified": "2026-10-27",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "2027-10（依公告）",
+   "notes": "115/10/22公告；線上申請：https://grants.moc.gov.tw/Web/",
+   "year": "116",
+   "parent": "文化部推動文化藝術扎根補助作業要點",
    "kind": "現行"
   }
  ]
