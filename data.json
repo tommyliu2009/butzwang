@@ -1,6 +1,6 @@
 {
- "generated": "2026-11-01 02:43",
- "count": 3077,
+ "generated": "2026-11-02 02:46",
+ "count": 3078,
  "histCount": 45662,
  "items": [
   {
@@ -1665,10 +1665,10 @@
    "url": "https://gov.tw/mN7",
    "sourceType": "彙整平台",
    "firstSeen": "2026-10-09",
-   "updated": "2026-10-09",
-   "verified": "2026-10-10",
+   "updated": "2026-11-02",
+   "verified": "2026-11-02",
    "linkStatus": "正常",
-   "status": "開放中",
+   "status": "已截止",
    "cycle": "",
    "nextOpen": "",
    "notes": "dayseechat:https://dayseechat.com/subsidy/grant-571/",
@@ -83756,6 +83756,35 @@
    "notes": "115/10/30公告；徵求說明書：https://www.mohw.gov.tw/dl-103135-1323c594-261f-4e94-83e6-0361e86b6d80.html",
    "year": "116",
    "parent": "衛生福利部補(捐)助科技發展計畫",
+   "kind": "現行"
+  },
+  {
+   "id": 48740,
+   "name": "116年度創育機構補助計畫",
+   "org": "經濟部中小及新創企業署",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2026-12-21",
+   "deadlineText": "2026-12-21",
+   "target": "依法設立之公司、公私立大專校院或法人機構（創育機構，個別或聯合申請；不得為陸資）",
+   "targets": [
+    "企業",
+    "民間團體",
+    "學校/研究"
+   ],
+   "summary": "補助創育機構鏈結中大企業資源，協助新創技術驗證與市場拓展；個別申請上限700萬、聯合1,500萬，關鍵技術另加10%獎勵金；線上申請至115/12/21 17:00。",
+   "url": "https://www.sme.gov.tw/article-tw-2275-15285",
+   "sourceType": "中企署官網",
+   "firstSeen": "2026-11-02",
+   "updated": "2026-11-02",
+   "verified": "2026-11-02",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "2027-10（依公告）",
+   "notes": "https://startup.sme.gov.tw/incubator/",
+   "year": "116",
+   "parent": "創育機構補助計畫",
    "kind": "現行"
   }
  ]
