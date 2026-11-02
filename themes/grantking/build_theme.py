@@ -29,7 +29,7 @@ for i in IT: ORGS[i['org']].append(i)
 BIGORG=sorted([o for o,v in ORGS.items() if len(v)>=3],key=lambda o:-len(ORGS[o]))
 AD=('<div class="adbox"><b>仁禾管理顧問</b><br><a href="mailto:renhe74123@gmail.com">renhe74123@gmail.com</a><br>'
     '<a href="https://line.me/R/ti/p/@891tcxhu" target="_blank" rel="noopener">LINE 官方帳號：@891tcxhu</a></div>')
-MENU=[('/','首頁'),('/search.html','找獎補助'),('/deadlines.html','截止日曆'),('/agencies/','依主管機關'),('/audiences/','依申請對象'),('/guide.html','申請指南'),('/glossary.html','名詞解釋'),('/qa.html','常見問答'),('/about-data.html','關於本站')]
+MENU=[('/','首頁'),('/search.html','找獎補助'),('/deadlines.html','截止日曆'),('/weekly.html','每週摘要'),('/agencies/','依主管機關'),('/audiences/','依申請對象'),('/guide.html','申請指南'),('/glossary.html','名詞解釋'),('/qa.html','常見問答'),('/about-data.html','關於本站')]
 ORGJ={"@type":"Organization","@id":BASE+"/#publisher","name":"仁禾管理顧問","email":"renhe74123@gmail.com","url":BASE+"/","sameAs":["https://line.me/R/ti/p/@891tcxhu"]}
 pages=[]
 def ld(*objs): return '<script type="application/ld+json">'+json.dumps({"@context":"https://schema.org","@graph":list(objs)},ensure_ascii=False)+'</script>'
@@ -87,7 +87,7 @@ ABOUT=(f'<section class="box" id="about"><h2>關於本站・資料來源與更�
 OPEN=srt([i for i in IT if i['status'] in ('開放中','即將開放')])
 NEW=sorted(IT,key=lambda i:i.get('firstSeen') or '',reverse=True)[:10]
 DS='WebSite'
-web={"@type":"WebSite","@id":BASE+"/#site","url":BASE+"/","name":NAME,"alternateName":"Taiwan Grant & Award Information","inLanguage":"zh-Hant-TW","publisher":{"@id":BASE+"/#publisher"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":BASE+"/search.html?k={kw}"},"query-input":"required name=kw"}}
+web={"@type":"WebSite","@id":BASE+"/#site","url":BASE+"/","name":NAME,"alternateName":"Taiwan Grant & Award Information","inLanguage":"zh-Hant-TW","publisher":{"@id":BASE+"/#publisher"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":BASE+"/search.html?k={search_term_string}"},"query-input":"required name=search_term_string"}}
 dset={"@type":"Dataset","@id":BASE+"/#dataset","name":"臺灣公部門獎補助計畫目錄","description":f"整理臺灣中央與地方政府獎勵、補助計畫 {len(IT):,} 項，含主管機關、申請對象、收件截止日與狀態，每日更新。","url":BASE+"/","license":"https://creativecommons.org/licenses/by/4.0/","isAccessibleForFree":True,"creator":{"@id":BASE+"/#publisher"},"dateModified":TODAY,"spatialCoverage":"臺灣","keywords":["獎補助","政府補助","獎勵計畫","補助申請"]}
 aud_counts=collections.Counter(t for i in IT for t in i.get('targets',[]))
 home=(f'<h1>{NAME}：臺灣政府獎勵與補助計畫查詢</h1><section class="band"><form action="/search.html"><label>快速搜尋獎補助</label><input name="k" placeholder="輸入關鍵字，例如：數位轉型、文化、青年創業"><button>搜尋</button></form></section>'
@@ -168,7 +168,12 @@ for i in IT:
           f'<p><a class="btn" href="{E(i["url"])}" target="_blank" rel="noopener nofollow">前往主管機關公告</a>　<a href="/guide.html">申請前準備清單</a></p>'
           +(('<section class="box"><h2>同機關其他計畫</h2><ul>'+''.join(f'<li><a href="/grants/{x["id"]}.html">{E(x["name"])}</a>（{E(x["status"])}）</li>' for x in sib)+'</ul></section>') if sib else ''))
     g={"@type":"MonetaryGrant","@id":BASE+p+"#grant","name":i['name'],"description":s,"url":BASE+p,"funder":{"@type":"GovernmentOrganization","name":i['org']},"sameAs":i['url']}
-    page(p,f'{i["name"]}｜{i["org"]} – {NAME}',f'{i["org"]}「{i["name"]}」：{s[:80]}',body,[g,gfl],[('/agencies/'+oslug(i['org'])+'.html' if i['org'] in BIGORG else '/search.html',i['org']),(p,i['name'][:30])])
+    gs={"@type":"GovernmentService","@id":BASE+p+"#service","name":i['name'] or (i['org']+' 獎補助計畫'),"serviceType":"政府獎勵・補助計畫","description":(s+('（收件截止：'+i['deadlineText']+'）' if i.get('deadlineText') else '')).strip(),
+        "provider":{"@type":"GovernmentOrganization","name":i['org']},"serviceOperator":{"@type":"GovernmentOrganization","name":i['org']},
+        "areaServed":{"@type":"AdministrativeArea","name":('臺灣' if i.get('region') in ('全國','',None) else i['region'])},"url":BASE+p,"sameAs":i['url'],"isRelatedTo":{"@id":BASE+p+"#grant"}}
+    if i.get('target'): gs["audience"]={"@type":"Audience","audienceType":i['target'][:200]}
+    if i.get('targets'): gs["category"]=list(i['targets'])
+    page(p,f'{i["name"]}｜{i["org"]} – {NAME}',f'{i["org"]}「{i["name"]}」：{s[:80]}',body,[g,gs,gfl],[('/agencies/'+oslug(i['org'])+'.html' if i['org'] in BIGORG else '/search.html',i['org']),(p,(i['name'] or i['org']+' 獎補助計畫')[:30])])
 GUIDE='''<section class="box"><h2>一、申請流程</h2><ol class="steps"><li><b>確認資格</b>：核對公告中的申請對象、設立年限、所在地區、產業別與是否有重複申請限制。</li><li><b>確認時程</b>：記下收件起訖日、是否分梯次，以及線上系統或紙本郵寄的截止時間（郵戳或送達為準）。</li><li><b>下載表件</b>：自主管機關公告頁下載最新年度的申請須知、計畫書格式與切結書，不要沿用舊年度格式。</li><li><b>撰寫計畫書</b>：寫清楚現況問題、執行內容、時程、預算編列與預期效益（可量化指標）。</li><li><b>編列經費</b>：區分補助款與自籌款，依須知的科目與比例上限編列。</li><li><b>送件與補件</b>：依指定方式送件，留意補件通知期限。</li><li><b>審查與簽約</b>：可能有書面審查、簡報或實地訪視；核定後依規定簽約、執行與核銷。</li></ol></section>
 <section class="box"><h2>二、常見準備文件清單</h2><ul class="check"><li>申請表與計畫書（依當年度格式）</li><li>公司或商業登記證明、立案證書（團體）</li><li>負責人身分證明文件影本</li><li>最近年度財務報表或營業稅申報資料</li><li>無欠稅證明（依主管機關要求）</li><li>勞保或投保人數證明（若資格與員工數有關）</li><li>經費預算表與報價單</li><li>切結書、個資同意書、利益迴避聲明等</li><li>其他佐證：專利、合作意向書、過往成果</li></ul><p class="sm">實際應備文件以各計畫申請須知為準。</p></section>
 <section class="box"><h2>三、提高通過率的小提醒</h2><ul><li>提早兩到四週開始準備，預留用印與補件時間。</li><li>計畫目標要對應主管機關的政策方向與評分項目。</li><li>預算合理且有報價佐證，避免集中在單一科目。</li><li>送件前再對一次頁數、格式與簽章。</li></ul></section>'''
@@ -184,17 +189,39 @@ page('/glossary.html',f'獎補助名詞解釋 – {NAME}','補助、獎勵、自
  [{"@type":"DefinedTermSet","@id":BASE+"/glossary.html#terms","name":"獎補助名詞","hasDefinedTerm":[{"@type":"DefinedTerm","name":a,"description":b} for a,b in GL]}],[('/glossary.html','名詞解釋')])
 page('/qa.html',f'常見問答 – {NAME}',f'{NAME}的收錄範圍、更新頻率、狀態說明與使用方式等常見問題。',faqhtml(),[faqld('/qa.html')],[('/qa.html','常見問答')])
 page('/about-data.html',f'關於本站與資料來源 – {NAME}',f'{NAME}的資料來源、更新頻率、收錄規模與維運單位說明。',ABOUT+f'<section class="box"><h2>聯絡我們</h2>{AD}</section>',[dset],[('/about-data.html','關於本站')])
+# 每週摘要（2026-11-02 GEO #11）：本週新開放／即將截止；每天重產本週頁，過去週次保留
+_td=datetime.date.today(); _iy,_iw,_=_td.isocalendar(); WK=f'{_iy}-W{_iw:02d}'; _mon=_td-datetime.timedelta(days=_td.weekday()); _sun=_mon+datetime.timedelta(days=6)
+NEWW=srt([i for i in IT if (i.get('firstSeen') or '')>=_mon.isoformat() and i['status']!='已截止'])
+END14=(_td+datetime.timedelta(days=14)).isoformat()
+SOON=sorted([i for i in IT if TODAY<=(i.get('deadline') or '')<=END14],key=lambda i:i['deadline'])
+UPC=srt([i for i in IT if i['status']=='即將開放'])
+wb=(f'<p class="lead">{_mon.month}/{_mon.day}–{_sun.month}/{_sun.day} 這一週：本週新收錄且仍可申請 {len(NEWW)} 項、未來 14 天內截止 {len(SOON)} 項、即將開放 {len(UPC)} 項。資料更新 {E(GEN)}（台北時間），每天自動重算。</p>'
+    f'<section class="box"><h2>本週新開放／新收錄（{len(NEWW)} 項）</h2>{rows(NEWW[:80]) if NEWW else "<p>本週目前沒有新收錄的計畫。</p>"}</section>'
+    f'<section class="box"><h2>即將截止：{_td.month}/{_td.day} 起 14 天內（{len(SOON)} 項）</h2>{rows(SOON[:80]) if SOON else "<p>未來 14 天沒有已公告截止日的計畫。</p>"}</section>'
+    f'<section class="box"><h2>即將開放（{len(UPC)} 項）</h2>{rows(UPC[:40]) if UPC else "<p>目前沒有已公告即將開放的計畫。</p>"}</section>')
+os.makedirs(f'{OUT}/weekly',exist_ok=True)
+OLDW=sorted([f[:-5] for f in os.listdir(f'{OUT}/weekly') if re.match(r'\d{4}-W\d{2}\.html$',f) and f[:-5]!=WK],reverse=True)
+arch='<section class="box"><h2>過去各週摘要</h2><ul>'+''.join(f'<li><a href="/weekly/{w}.html">{w[:4]} 年第 {int(w[6:])} 週</a></li>' for w in OLDW[:52])+'</ul></section>' if OLDW else ''
+wtitle=f'本週新開放與即將截止的政府補助（{_mon.month}/{_mon.day}–{_sun.month}/{_sun.day}）'
+wdesc=f'{_iy} 年第 {_iw} 週獎補助摘要：本週新開放 {len(NEWW)} 項、14 天內截止 {len(SOON)} 項、即將開放 {len(UPC)} 項，附主管機關與收件截止日。'
+wl=[itemlist('/weekly.html',NEWW+SOON,'本週新開放與即將截止的獎補助')]
+page(f'/weekly/{WK}.html',f'{wtitle} – {NAME}',wdesc,wb+'<p class="more"><a href="/weekly.html">最新一週摘要 →</a></p>',wl,[('/weekly.html','每週摘要'),(f'/weekly/{WK}.html',f'{_iy} 年第 {_iw} 週')])
+page('/weekly.html',f'{wtitle} – {NAME}',wdesc,wb+arch,wl,[('/weekly.html','每週摘要')])
+pages.extend(f'/weekly/{w}.html' for w in OLDW)
 # robots / sitemap / llms
 open(f'{OUT}/robots.txt','w').write(''.join(f'User-agent: {b}\nAllow: /\n\n' for b in ['GPTBot','OAI-SearchBot','ChatGPT-User','PerplexityBot','ClaudeBot','Claude-SearchBot','anthropic-ai','Google-Extended','Googlebot','Bingbot','Applebot-Extended','CCBot','meta-externalagent','Amazonbot','*'])+f'Sitemap: {BASE}/sitemap.xml\n')
 open(f'{OUT}/sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{BASE}{p}</loc><lastmod>{TODAY}</lastmod></url>\n' for p in pages)+'</urlset>\n')
 open(f'{OUT}/llms.txt','w').write(f'''# {NAME}（Taiwan Grant & Award Information，www.grantking.tw）
 > 臺灣公部門獎勵與補助計畫目錄：以主管機關、申請對象與截止日期整理中央部會、縣市政府與鄉鎮市區公所的公告，現行 {len(IT):,} 項，每日清晨更新（最近：{GEN}，台北時間）。
 
+最後更新：{GEN[:10] or TODAY}（{GEN or TODAY}，台北時間）。下方清單中的日期皆為各計畫的「收件截止日」，不是本站更新日。
+
 維運：仁禾管理顧問（renhe74123@gmail.com，LINE 官方帳號：@891tcxhu）。各計畫內容以主管機關公告為準。
 
 ## 瀏覽方式
 - [找獎補助（關鍵字搜尋）]({BASE}/search.html)
 - [截止日曆]({BASE}/deadlines.html)：依月份列出未截止計畫
+- [每週摘要：本週新開放／即將截止]({BASE}/weekly.html)
 - [依主管機關]({BASE}/agencies/)：{len(BIGORG)} 個機關分類
 - [依申請對象]({BASE}/audiences/)：企業、民間團體、學校研究、個人青年、政府機關
 - 單一計畫頁：{BASE}/grants/<編號>.html，含主管機關、對象、截止日、狀態、原始公告連結
@@ -206,7 +233,7 @@ open(f'{OUT}/llms.txt','w').write(f'''# {NAME}（Taiwan Grant & Award Informatio
 - [常見問答]({BASE}/qa.html)
 - [關於本站與資料來源]({BASE}/about-data.html)
 
-## 目前收件中（節錄）
-'''+''.join(f'- [{i["name"]}]({BASE}/grants/{i["id"]}.html)：{i["org"]}，截止 {i.get("deadlineText") or "依公告"}\n' for i in OPEN[:30]))
-open(f'{OUT}/llms-full.txt','w').write(f"# {NAME} 完整計畫清單（www.grantking.tw）\n> 現行 {len(IT):,} 項，資料更新 {GEN}（台北時間）。各計畫以主管機關公告為準。\n\n"+''.join(f"## {i['name']}\n- 頁面：{BASE}/grants/{i['id']}.html\n- 主管機關：{i['org']}（{i['level']}，{i['region']}）\n- 狀態：{i['status']}；截止：{i.get('deadlineText') or '依公告'}\n- 申請對象：{i.get('target') or '依公告'}\n- 摘要：{URLRE.sub('',summ(i))}\n\n" for i in srt(IT)))
+## 目前收件中（節錄，日期為收件截止日）
+'''+''.join(f'- [{i["name"]}]({BASE}/grants/{i["id"]}.html)：{i["org"]}，收件截止 {i.get("deadlineText") or "依公告"}\n' for i in OPEN[:30]))
+open(f'{OUT}/llms-full.txt','w').write(f"# {NAME} 完整計畫清單（www.grantking.tw）\n> 現行 {len(IT):,} 項，最後更新 {GEN or TODAY}（台北時間）；各項「截止」為收件截止日。各計畫以主管機關公告為準。\n\n"+''.join(f"## {i['name']}\n- 頁面：{BASE}/grants/{i['id']}.html\n- 主管機關：{i['org']}（{i['level']}，{i['region']}）\n- 狀態：{i['status']}；截止：{i.get('deadlineText') or '依公告'}\n- 申請對象：{i.get('target') or '依公告'}\n- 摘要：{URLRE.sub('',summ(i))}\n\n" for i in srt(IT)))
 print(f'{NAME}：產生 {len(pages)} 頁，改寫摘要使用 {sum(1 for i in IT if str(i["id"]) in CACHE)}/{len(IT)} 筆 → {OUT}'+('（dry-run）' if DRY else ''))
