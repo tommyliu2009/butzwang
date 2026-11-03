@@ -73,7 +73,7 @@ def dataset(url,name,desc):
 SUMSRC=f'資料更新：{GEN}（台北時間）｜來源：政府官網公告｜維護：仁禾管理顧問'
 STATE='/workspace/butzwang_tools/geo_lastmod.json'; LM=json.load(open(STATE)) if os.path.exists(STATE) else {}
 SM=[]
-for p in ['index.html','open.html','list.html','faq.html','about.html']+sorted(x[2:] for x in glob.glob('./r/*.html')+glob.glob('./t/*.html')):
+for p in ['index.html','open.html','list.html','faq.html','about.html']+(['videos.html'] if os.path.exists('videos.html') else [])+sorted(x[2:] for x in glob.glob('./r/*.html')+glob.glob('./t/*.html')):
     h=open(p,encoding='utf-8').read(); path='/' if p=='index.html' else '/'+urllib.parse.quote(p); url=BASE+path
     title=geo.get_title(geo.strip(h)); desc=geo.get_desc(h); short=re.sub(r'｜補助王$','',title)
     pt={'faq.html':'FAQPage','about.html':'AboutPage'}.get(p,'CollectionPage' if p!='index.html' else 'WebPage')
