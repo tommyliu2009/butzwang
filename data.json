@@ -1,6 +1,6 @@
 {
- "generated": "2026-11-03 02:44",
- "count": 3080,
+ "generated": "2026-11-04 02:40",
+ "count": 3083,
  "histCount": 45662,
  "items": [
   {
@@ -83840,6 +83840,87 @@
    "notes": "",
    "year": "116",
    "parent": "國際合作研究計畫",
+   "kind": "現行"
+  },
+  {
+   "id": 48743,
+   "name": "2027年臺愛(NSTC-ETAg)雙邊合作人員交流互訪計畫",
+   "org": "國家科學及技術委員會科教發展及國際合作處",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2027-01-29",
+   "deadlineText": "2027-01-29",
+   "target": "符合國科會專題研究計畫主持人資格之臺方研究人員（愛方依ETAg規定）",
+   "targets": [
+    "學校/研究"
+   ],
+   "summary": "國科會與愛沙尼亞ETAg合作徵求雙邊人員互訪；ETAg補助上限1,400歐元、國科會旅費上限7.5萬元；執行期2027/6/1至12/31；115/11/2至116/1/29受理。",
+   "url": "https://www.nstc.gov.tw/folksonomy/rfpDetail/2fa0b0a6-9a2b-4d3d-b672-afe07eeaea72?l=ch",
+   "sourceType": "國科會官網（科教國合處計畫徵求）",
+   "firstSeen": "2026-11-04",
+   "updated": "2026-11-04",
+   "verified": "2026-11-04",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "2027-11（依公告）",
+   "notes": "申請須知見官網附件",
+   "year": "116",
+   "parent": "國科會國際合作計畫",
+   "kind": "現行"
+  },
+  {
+   "id": 48744,
+   "name": "2027-2028臺灣與斯洛伐克雙邊合作研究人員互訪交流PPP計畫",
+   "org": "國家科學及技術委員會科教發展及國際合作處",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2026-12-02",
+   "deadlineText": "2026-12-02",
+   "target": "符合國科會專題研究計畫主持人資格之臺方研究人員（共同主持人、博士後、博士生可參與）",
+   "targets": [
+    "學校/研究"
+   ],
+   "summary": "補助臺方人員赴斯洛伐克交流之交通、生活及保險費，每案每年約24萬元，不補助研究計畫支出；執行期2027/7/1起二年期；115/10/1至12/2受理。",
+   "url": "https://www.nstc.gov.tw/folksonomy/rfpDetail/32419664-94c1-44c7-8a27-7b86c76c18ac?l=ch",
+   "sourceType": "國科會官網（科教國合處計畫徵求）",
+   "firstSeen": "2026-11-04",
+   "updated": "2026-11-04",
+   "verified": "2026-11-04",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "依公告",
+   "notes": "申請須知見官網附件",
+   "year": "116",
+   "parent": "國科會國際合作計畫",
+   "kind": "現行"
+  },
+  {
+   "id": 48745,
+   "name": "116年度「工程科技中堅躍升研究計畫」",
+   "org": "國家科學及技術委員會工程技術研究發展處",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2027-01-04",
+   "deadlineText": "2027-01-04",
+   "target": "工程領域中堅學者（依徵求公告資格）",
+   "targets": [
+    "其他"
+   ],
+   "summary": "為厚實學術研究人才能量、鞏固工程科技優勢領域，支持長期系統性研究；即日起受理，116/1/4（週一）前函送國科會，逾期不受理；詳見公告附件。",
+   "url": "https://www.nstc.gov.tw/eng/ch/detail/b220e825-8b97-4bad-800c-7ddd53203985",
+   "sourceType": "國科會官網（工程處計畫徵求）",
+   "firstSeen": "2026-11-04",
+   "updated": "2026-11-04",
+   "verified": "2026-11-04",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "依公告",
+   "notes": "徵求公告PDF見官網附件",
+   "year": "116",
+   "parent": "國科會專題研究計畫",
    "kind": "現行"
   }
  ]
