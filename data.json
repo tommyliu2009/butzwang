@@ -1,6 +1,6 @@
 {
- "generated": "2026-11-06 02:49",
- "count": 3089,
+ "generated": "2026-11-07 02:46",
+ "count": 3090,
  "histCount": 45662,
  "items": [
   {
@@ -81757,10 +81757,10 @@
    "url": "https://www.culture.ntpc.gov.tw/xceventsnews/cont?bdate=2026-10-01&disp=1&qcat=0G295702776245651904&sid=0Q274582183055061239&xsmsid=0G295700334178642420",
    "sourceType": "新北市文化局官網",
    "firstSeen": "2026-10-14",
-   "updated": "2026-10-14",
-   "verified": "2026-10-14",
+   "updated": "2026-11-07",
+   "verified": "2026-11-07",
    "linkStatus": "可連",
-   "status": "開放中",
+   "status": "已截止",
    "cycle": "年度",
    "nextOpen": "2027-10（依公告）",
    "notes": "https://web.law.ntpc.gov.tw/Scripts/FLAWDAT01.aspx?lncode=1C0240071",
@@ -84089,6 +84089,33 @@
    "notes": "計畫官網：https://twpathfinder.yda.gov.tw/",
    "year": "116",
    "parent": "青年百億海外圓夢基金",
+   "kind": "現行"
+  },
+  {
+   "id": 48752,
+   "name": "2026-2027年歐盟Biodiversa+生物多樣性跨國多邊合作計畫（pre-proposals）",
+   "org": "國家科學及技術委員會科教國合處",
+   "level": "中央",
+   "region": "全國",
+   "deadline": "2026-11-10",
+   "deadlineText": "2026-11-10",
+   "target": "符合國科會補助專題研究計畫作業要點主持人資格之本國研究人員（須與歐洲夥伴組隊）",
+   "targets": [
+    "學校/研究"
+   ],
+   "summary": "國科會與歐盟Biodiversa+同步徵求跨國生物多樣性合作；pre-proposals至115/11/10；經費上限300萬元/年；須經歐方線上平台申請，成案後一年內再向國科會提雙邊協議專案型申請。",
+   "url": "https://www.nstc.gov.tw/folksonomy/rfpDetail/8918b78f-a99b-4d46-ac0a-892307712a2b?l=ch",
+   "sourceType": "國科會計畫徵求專區",
+   "firstSeen": "2026-11-07",
+   "updated": "2026-11-07",
+   "verified": "2026-11-07",
+   "linkStatus": "可連",
+   "status": "開放中",
+   "cycle": "年度",
+   "nextOpen": "依歐盟Joint Call公告",
+   "notes": "細節以Biodiversa+官網英文公告為準：https://www.biodiversa.org/；歐方平台申請",
+   "year": "115-116",
+   "parent": "國際合作／生物多樣性",
    "kind": "現行"
   }
  ]
