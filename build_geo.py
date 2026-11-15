@@ -11,7 +11,11 @@ D=json.load(open('data.json')); IT=D['items']; GEN=D.get('generated',NOWS)
 C=len(IT); H=D.get('histCount',0)
 st=collections.Counter(i['status'] for i in IT); lv=collections.Counter(i['level'] for i in IT)
 OPEN=sorted([i for i in IT if i['status'] in ('開放中','即將開放')],key=lambda i:i.get('deadline') or '9999')
-SRC='中央部會、22 縣市政府與鄉鎮市公所官網公告，以及政府新聞稿與公開彙整平台'
+# 縣市數依實際收錄計算（2026-11-15；以前寫死 22）
+NCTY=len({r for i in IT for r in (i.get('regions') or [i['region']]) if r and r!='全國'})
+SRC=f'中央部會、{NCTY} 縣市政府與鄉鎮市公所官網公告，以及政府新聞稿'
+# 舊的地區／對象頁先刪除再重建（地區改名，例如「新竹」拆成新竹縣、新竹市，避免舊頁留在 sitemap）
+for _old in glob.glob('./r/*.html')+glob.glob('./t/*.html'): os.remove(_old)
 DESC=f'補助王彙整台灣中央部會、縣市政府與鄉鎮市公所的補助計畫，現行 {C:,} 筆、歷史（109–115 年）{H:,} 筆，可依截止日、主辦層級、補助對象與地區查詢，並推估週期性補助的下次開放時間。'
 AD='<div class="adbox"><b>仁禾管理顧問</b><br><a href="mailto:renhe74123@gmail.com">renhe74123@gmail.com</a><br><a href="https://line.me/R/ti/p/@891tcxhu" target="_blank" rel="noopener">LINE 官方帳號：@891tcxhu</a></div>'
 CSS='''<style>body{margin:0;font-family:-apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;color:#1f2933;background:#f6f7f9;line-height:1.6}a{color:#e8590c}.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
@@ -37,19 +41,19 @@ def table(items):
         t+=f'<tr><td><a href="{esc(i["url"])}" target="_blank" rel="noopener">{esc(i["name"])}</a><div class="crumb">{esc(i.get("target",""))}｜{esc((i.get("summary") or "")[:120])}</div></td><td class="hide-m">{esc(i["org"])}</td><td>{esc(i["region"])}</td><td>{esc(i.get("deadlineText") or "依公告")}<div class="crumb">{esc(i["status"])}</div>{nx}</td></tr>'
     return t+'</table>'
 def srt(items): return sorted(items,key=lambda i:({'開放中':0,'即將開放':1,'常態性/依公告':2,'已截止':3}.get(i['status'],4),i.get('deadline') or '9999'))
-REG=[r for r,c in collections.Counter(i['region'] for i in IT).most_common() if c>=5]
+REG=[r for r,c in collections.Counter(x for i in IT for x in (i.get('regions') or [i['region']])).most_common() if c>=5]
 TGT=[t for t,c in collections.Counter(t for i in IT for t in i['targets']).most_common()]
 def tags(): return '<div class="card"><h2>依地區</h2><div class="tags">'+''.join(f'<a href="/r/{urllib.parse.quote(slug(r))}.html">{esc(r)}</a>' for r in REG)+'</div><h2 style="margin-top:12px">依補助對象</h2><div class="tags">'+''.join(f'<a href="/t/{urllib.parse.quote(slug(t))}.html">{esc(t)}</a>' for t in TGT)+'</div></div>'
 mk('/open.html','開放中與即將開放的政府補助計畫｜補助王',f'目前開放申請中 {st["開放中"]} 筆、即將開放 {st["即將開放"]} 筆的台灣政府補助計畫，依截止日排序，附主辦單位、補助對象與官方公告連結。','開放中與即將開放的補助',f'開放中 <b>{st["開放中"]}</b> 筆、即將開放 <b>{st["即將開放"]}</b> 筆，依截止日排序。',f'<div class="card">{table(OPEN)}</div>'+tags())
 mk('/list.html','全部現行政府補助計畫一覽｜補助王',f'台灣現行政府補助計畫完整清單，共 {C:,} 筆，含中央 {lv["中央"]:,} 筆、縣市 {lv["縣市"]:,} 筆，附截止日、主辦單位、補助對象與官方連結。','全部現行補助計畫',f'共 <b>{C:,}</b> 筆：中央 {lv["中央"]:,}、縣市 {lv["縣市"]:,}、其他 {C-lv["中央"]-lv["縣市"]:,}。開放中排最前面。',tags()+f'<div class="card">{table(srt(IT))}</div>')
 RP={};TP={}
 for r in REG:
-    its=srt([i for i in IT if i['region']==r]); p=f'/r/{slug(r)}.html'; RP[p]=r
+    its=srt([i for i in IT if r in (i.get('regions') or [i['region']])]); p=f'/r/{slug(r)}.html'; RP[p]=r
     mk(p,f'{r}政府補助計畫（{len(its)} 筆）｜補助王',f'{r}適用的政府補助計畫共 {len(its)} 筆，其中開放中 {sum(i["status"]=="開放中" for i in its)} 筆，附截止日、主辦單位、補助對象與官方公告連結。',f'{r}的補助計畫',f'共 <b>{len(its)}</b> 筆，開放中 {sum(i["status"]=="開放中" for i in its)} 筆。',f'<div class="card">{table(its)}</div>'+tags())
 for t in TGT:
     its=srt([i for i in IT if t in i['targets']]); p=f'/t/{slug(t)}.html'; TP[p]=t
     mk(p,f'適合{t}的政府補助計畫（{len(its)} 筆）｜補助王',f'補助對象為{t}的台灣政府補助計畫共 {len(its)} 筆，其中開放中 {sum(i["status"]=="開放中" for i in its)} 筆，附截止日、主辦單位與官方公告連結。',f'補助對象：{t}',f'共 <b>{len(its)}</b> 筆，開放中 {sum(i["status"]=="開放中" for i in its)} 筆。',f'<div class="card">{table(its)}</div>'+tags())
-FAQ=[('補助王是什麼？',f'補助王（www.subsidyking.tw）是仁禾管理顧問建置的免費台灣政府補助查詢網站，彙整中央部會、22 縣市政府與鄉鎮市公所的補助計畫，現行 {C:,} 筆、歷史（109–115 年）{H:,} 筆。'),
+FAQ=[('補助王是什麼？',f'補助王（www.subsidyking.tw）是仁禾管理顧問建置的免費台灣政府補助查詢網站，彙整中央部會、{NCTY} 縣市政府與鄉鎮市公所的補助計畫，現行 {C:,} 筆、歷史（109–115 年）{H:,} 筆。'),
  ('補助王的資料來源是什麼？',f'資料來自{SRC}。每筆補助都附官方公告連結，實際申請資格與期限以主辦單位公告為準。'),
  ('資料多久更新一次？',f'每天凌晨自動更新並檢查連結，最近一次更新為 {GEN}（台北時間）。'),
  ('現在有哪些補助開放申請？',f'截至 {GEN}，開放中 {st["開放中"]} 筆、即將開放 {st["即將開放"]} 筆，完整清單見「開放中補助」頁（{BASE}/open.html）。'),
@@ -94,10 +98,11 @@ for p in ['index.html','open.html','list.html','faq.html','about.html']+(['video
            f'<details style="margin-top:6px"><summary>開放中與即將開放的補助（靜態清單 {min(40,len(OPEN))} 筆）</summary><ul>'+''.join(f'<li><a href="{esc(i["url"])}" target="_blank" rel="noopener">{esc(i["name"])}</a>｜{esc(i["org"])}｜{esc(i.get("deadlineText") or "依公告")}</li>' for i in OPEN[:40])+'</ul></details>'
            '<div style="margin-top:4px">'+'、'.join(f'<a href="{u}">{n}</a>' for u,n in NAVL[1:])+'</div>')
         s+=(f'<details style="margin-top:6px"><summary><b>常見問答</b>（{min(6,len(FAQ))} 題，完整請見<a href="/faq.html">常見問答頁</a>）</summary>'+''.join(f'<p style="margin:6px 0"><b>Q：{esc(q)}</b><br>A：{esc(re.sub(r"<[^>]+>","",a))}</p>' for q,a in FAQ[:6])+'</details>'
-            '<div style="margin-top:6px"><b>關於本站／資料來源與更新頻率：</b>本站由仁禾管理顧問建置維護，資料取自各中央部會、22 縣市政府與相關機構官網公開的補助公告，每日自動更新；各筆資料均附原始公告連結，實際內容以主管機關公告為準。<a href="/about.html">了解更多</a></div>')
+            f'<div style="margin-top:6px"><b>關於本站／資料來源與更新頻率：</b>本站由仁禾管理顧問建置維護，資料取自各中央部會、{NCTY} 縣市政府與相關機構官網公開的補助公告，每日自動更新；各筆資料均附原始公告連結，實際內容以主管機關公告為準。<a href="/about.html">了解更多</a></div>')
     else:
         m=re.search(r'<p class="lead">(.*?)</p>',h,re.S); lead=re.sub(r'<[^>]+>','',m.group(1)).strip() if m else ''
         s=esc(desc+(' '+lead if lead and lead not in desc else ''))+' '+esc(SUMSRC)+'。'
+    if p=='index.html': h=re.sub(r'彙整中央部會、\d+ 縣市政府與鄉鎮市公所的補助計畫，依截止日', f'彙整中央部會、{NCTY} 縣市政府與鄉鎮市公所的補助計畫，依截止日', h)
     h,_,_=geo.inject(h,url,g,s,NAME,sum_after=('<!--before-main-->' if p=='index.html' else '</header>'),og_image=BASE+'/og.png')
     GSV='<meta name="google-site-verification" content="ErUscDsKVvX8bVYiyhEri1tvmhr2MGhbv_2QcA6Hn3s">'
     if p=='index.html' and GSV not in h: h=h.replace('</head>',GSV+'\n</head>',1)  # Google Search Console 驗證（2026-10-24）

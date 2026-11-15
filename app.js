@@ -5,21 +5,23 @@ const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const linkify = s => esc(s).replace(/(https?:\/\/[^\s；;，,）)]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 const today = (() => { const d = new Date(new Date().toLocaleString('en-US', {timeZone:'Asia/Taipei'})); d.setHours(0,0,0,0); return d; })();
+const todayIso = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
 const daysLeft = iso => iso ? Math.round((new Date(iso + 'T00:00:00') - today) / 864e5) : null;
 
 const items0 = DATA.items.map(x => {
   const d = daysLeft(x.deadline);
   let status = x.status;
   if (d !== null && d < 0 && status === '開放中') status = '已截止';
-  return {...x, days: d, status, _txt: [x.name, x.org, x.target, x.summary, x.cycle, x.nextOpen, x.region].join(' ').toLowerCase()};
+  if (x.start && status === '即將開放' && x.start <= todayIso && (d === null || d >= 0)) status = '開放中';   // 受理開始日已到
+  return {...x, days: d, status, regions: x.regions || String(x.region||'').split('、').filter(Boolean), _txt: [x.name, x.org, x.target, x.summary, x.cycle, x.nextOpen, x.region].join(' ').toLowerCase()};
 });
 let items = items0; const CUR = items0; let HIST = null; let MODE = '現行';
-const prep = x => { const d = daysLeft(x.deadline); return {...x, days: d, _txt: [x.name, x.org, x.target, x.summary, x.region, x.year, x.parent].join(' ').toLowerCase()}; };
+const prep = x => { const d = daysLeft(x.deadline); return {...x, days: d, regions: x.regions || String(x.region||'').split('、').filter(Boolean), _txt: [x.name, x.org, x.target, x.summary, x.region, x.year, x.parent].join(' ').toLowerCase()}; };
 
 const RANGES = [['all','不限'],['7','7 天內'],['30','30 天內'],['90','90 天內'],['rolling','隨時受理/待公告']];
 const state = {q:'', status:new Set(['開放中','即將開放','常態性/依公告']), level:new Set(), targets:new Set(), range:'all', region:'', org:'', sort:'deadline'};
 
-function counts(key){ const m = {}; items.forEach(x => [].concat(x[key]).forEach(v => m[v] = (m[v]||0)+1)); return m; }
+function counts(key){ const m = {}; items.forEach(x => [].concat(x[key] ?? []).forEach(v => m[v] = (m[v]||0)+1)); return m; }
 const bound = new Set(); let statusTouched = false;
 function buildChips(key, order){
   const box = document.querySelector(`.chips[data-key="${key}"]`); const c = counts(key);
@@ -37,7 +39,7 @@ rbox.innerHTML = RANGES.map(([v,l]) => `<button class="chip" data-v="${v}">${l}<
 rbox.addEventListener('click', e => { const b = e.target.closest('.chip'); if(b){ state.range = b.dataset.v; render(); }});
 
 const fillSelect = (sel, key) => { sel.querySelectorAll('option:not([value=""])').forEach(o=>o.remove()); const c = counts(key); Object.keys(c).sort((a,b)=>a.localeCompare(b,'zh-Hant')).forEach(v => sel.insertAdjacentHTML('beforeend', `<option value="${esc(v)}">${esc(v)}（${c[v]}）</option>`)); };
-fillSelect($('#region'), 'region'); fillSelect($('#org'), 'org');
+fillSelect($('#region'), 'regions'); fillSelect($('#org'), 'org');
 $('#region').onchange = e => { state.region = e.target.value; render(); };
 $('#org').onchange = e => { state.org = e.target.value; render(); };
 $('#sort').onchange = e => { state.sort = e.target.value; render(); };
@@ -58,7 +60,8 @@ $('#openFilters').onclick = () => $('#filters').classList.add('open');
 $('#applyFilters').onclick = () => $('#filters').classList.remove('open');
 
 function badge(x){
-  if (x.days === null) return `<span class="badge b-roll">${esc(x.deadlineText || '待公告')}</span>`;
+  // 沒有日期時，截止欄已顯示文字（例：額滿為止），徽章只標狀態，避免「額滿為止額滿為止」（2026-11-15）
+  if (x.days === null) return x.status === '已截止' ? `<span class="badge b-done">已截止</span>` : x.status === '即將開放' ? `<span class="badge b-near">即將開放</span>` : '';
   if (x.days < 0) return `<span class="badge b-done">已截止</span>`;
   if (x.days === 0) return `<span class="badge b-urgent">今天截止</span>`;
   const cls = x.days <= 7 ? 'b-urgent' : x.days <= 30 ? 'b-near' : 'b-ok';
@@ -71,7 +74,7 @@ function match(x){
   if (state.status.size && !(state.q && !statusTouched) && !state.status.has(x.status)) return false;
   if (state.level.size && !state.level.has(x.level)) return false;
   if (state.targets.size && !x.targets.some(v => state.targets.has(v))) return false;
-  if (state.region && x.region !== state.region) return false;
+  if (state.region && !x.regions.includes(state.region)) return false;
   if (state.org && x.org !== state.org) return false;
   if (state.range === 'rolling') return x.days === null;
   if (state.range !== 'all') return x.days !== null && x.days >= 0 && x.days <= +state.range;
@@ -89,7 +92,7 @@ function sortFn(a,b){
 }
 function card(x){
   return `<article class="card ${x.status==='已截止'?'closed':''}" data-id="${x.id}" tabindex="0">
-    <div class="top"><span class="st st-${esc(x.status)}">${esc(x.status)}</span><span class="tag lv-${esc(x.level)}">${esc(x.level)}</span>${x.region!=='全國'?`<span class="tag">📍${esc(x.region)}</span>`:''}</div>
+    <div class="top"><span class="st st-${esc(x.status)}">${esc(x.status)}</span><span class="tag lv-${esc(x.level)}">${esc(x.level)}</span>${x.region && x.region!=='全國'?`<span class="tag">📍${esc(x.region)}</span>`:''}</div>
     <h3>${esc(x.name)}</h3>
     <div class="org">🏛 ${esc(x.org)}${x.target?`　👥 ${esc(x.target)}`:''}</div>
     <p class="summary">${esc(x.summary)}</p>
@@ -129,6 +132,7 @@ function openModal(id){
     <h2 id="mTitle">${esc(x.name)}</h2>
     <dl class="kv">
       ${row('主辦單位', x.org)}
+      ${row('受理開始', x.start)}
       ${row('截止日期', esc(fmtDate(x)) + badge(x), true)}
       ${row('補助對象', x.target)}
       ${row('摘要', x.summary)}
@@ -152,7 +156,7 @@ const week = items.filter(x => x.days !== null && x.days >= 0 && x.days <= 14).l
 const upcoming = items.filter(x => x.status==='即將開放').length;
 const rolling = items.filter(x => x.status==='常態性/依公告').length;
 $('#stats').innerHTML = `<span class="stat"><b>${items.length}</b>筆補助</span><span class="stat"><b>${rolling}</b>常態性/依公告</span><span class="stat"><b>${open}</b>開放中</span><span class="stat"><b>${week}</b>14 天內截止</span><span class="stat"><b>${upcoming}</b>即將開放</span>`;
-$('#updated').textContent = DATA.generated; $('#total').textContent = items.length;
+$('#updated').textContent = DATA.generated; { const f = document.getElementById('fetched'); if (f) f.textContent = DATA.fetched || '—'; } $('#total').textContent = items.length;
 render();
 function setMode(m){
   MODE = m; document.querySelectorAll('#kindToggle .chip').forEach(b => b.classList.toggle('on', b.dataset.k === m));
@@ -160,10 +164,10 @@ function setMode(m){
   statusTouched = false; state.status = m === '歷史' ? new Set() : new Set(['開放中','即將開放','常態性/依公告']);
   state.level.clear(); state.targets.clear(); state.region=''; state.org=''; state.range='all';
   buildChips('status', ['開放中','即將開放','常態性/依公告','已截止','歷史(已結束)']); buildChips('level', ['中央','縣市','鄉鎮市','民間/其他']); buildChips('targets');
-  fillSelect($('#region'), 'region'); fillSelect($('#org'), 'org'); $('#region').value=''; $('#org').value='';
+  fillSelect($('#region'), 'regions'); fillSelect($('#org'), 'org'); $('#region').value=''; $('#org').value='';
   $('#total').textContent = items.length; render();
 }
-const HY = DATA.histYears || {}; const YRS = Object.keys(HY).sort().reverse(); let curYear = YRS[0];
+const HY = DATA.histYears || {}; const YRS = Object.keys(HY).sort((a,b)=>(+b)-(+a)); let curYear = YRS[0];   // 數字排序（字串排序會把 99 排在 115 前面）
 const yt = $('#yearToggle');
 yt.innerHTML = YRS.map(y => `<button class="chip" data-y="${y}">${y}年<small>${HY[y]}</small></button>`).join('') + `<button class="chip" data-y="all">全部年度<small>${Object.values(HY).reduce((a,b)=>a+b,0)}</small></button>`;
 function loadYears(ys, cb){

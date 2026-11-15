@@ -1,0 +1,1 @@
+(window.BZW_HIST=window.BZW_HIST||{})["97"]=[{"id":48632,"name":"花蓮縣政府推動「2008包機花蓮遊」專案獎助計畫","org":"花蓮縣政府","level":"縣市","region":"花蓮","target":"依法規規定","targets":["其他"],"summary":"花蓮縣政府依本法規辦理之獎勵措施；資格、金額與受理期間依法規條文及主管機關公告。","url":"https://glrs.hl.gov.tw/glrsout/LawContent.aspx?id=GL000036","sourceType":"法規資料庫","status":"歷史(已結束)","notes":"來源：地方法規查詢系統","year":"97","kind":"歷史"}];

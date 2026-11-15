@@ -103,3 +103,12 @@ select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:10
 .bignum b{font-size:inherit !important;margin:0 4px}
 
 .searchbar{display:flex;gap:8px}.searchbar #q{flex:1;min-width:0}.qbtn{flex:none;padding:0 22px;border:0;border-radius:12px;background:#e8590c;color:#fff;font-size:16px;font-weight:700;cursor:pointer}@media(max-width:600px){.qbtn{padding:0 14px}}
+
+/* 2026-11-15 修正：hidden 屬性一律隱藏（.chips 的 display:flex 曾蓋過 hidden，現行模式也看得到歷史年度按鈕） */
+[hidden]{display:none!important}
+/* 電腦版仁禾廣告：頁首右上角（RULES §2）；手機版用 #mobileAd */
+.hero .wrap{position:relative}
+.hdad{position:absolute;top:-10px;right:20px;width:250px;padding:8px 12px;border:2px solid #f08a24;border-radius:12px;background:#fff7ee;text-align:center;line-height:1.5;font-size:14px;box-shadow:0 2px 8px rgba(232,89,12,.12)}
+.hdad b{color:#d2691e;font-size:15px}.hdad a{color:#d2691e;word-break:break-all}
+@media (max-width:860px){.hdad{display:none}}
+@media (min-width:861px){.hero .sub,.hero h1{padding-right:270px}}
