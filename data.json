@@ -1,8 +1,8 @@
 {
- "generated": "2026-11-16 02:59",
+ "generated": "2026-11-16 08:27",
  "fetched": "2026-11-16 02:42",
  "count": 3114,
- "histCount": 45668,
+ "histCount": 45669,
  "items": [
   {
    "id": 1,
@@ -2331,38 +2331,6 @@
    "nextOpen": "",
    "notes": "",
    "year": "116",
-   "parent": "",
-   "kind": "現行"
-  },
-  {
-   "id": 75,
-   "name": "115年品牌臺東產業行銷補助",
-   "org": "臺東縣政府",
-   "level": "縣市",
-   "region": "臺東",
-   "regions": [
-    "臺東"
-   ],
-   "deadline": "2026-11-30",
-   "start": null,
-   "deadlineText": "2026-11-30",
-   "target": "企業、民間團體",
-   "targets": [
-    "企業",
-    "民間團體"
-   ],
-   "summary": "補助臺東在地產業品牌行銷。截止日取自dayseechat，請以官方公告為準。",
-   "url": "https://bdsone.taitung.gov.tw/article.html?id=300",
-   "sourceType": "彙整平台",
-   "firstSeen": "2026-10-09",
-   "updated": "2026-10-09",
-   "verified": "2026-11-16",
-   "linkStatus": "正常",
-   "status": "開放中",
-   "cycle": "",
-   "nextOpen": "",
-   "notes": "dayseechat:https://dayseechat.com/subsidy/grant-284/",
-   "year": "115",
    "parent": "",
    "kind": "現行"
   },
@@ -97236,6 +97204,38 @@
    "cycle": "",
    "nextOpen": "",
    "notes": "臺東縣一站式產業輔導網轉知國貿署公告",
+   "year": "116",
+   "parent": "",
+   "kind": "現行"
+  },
+  {
+   "id": 48783,
+   "name": "116年品牌臺東產業行銷補助方案",
+   "org": "臺東縣政府",
+   "level": "縣市",
+   "region": "臺東",
+   "regions": [
+    "臺東"
+   ],
+   "deadline": "2026-10-31",
+   "start": "2026-10-01",
+   "deadlineText": "2026-10-31",
+   "target": "企業、民間團體",
+   "targets": [
+    "企業",
+    "民間團體"
+   ],
+   "summary": "補助臺東在地產業參加縣外展覽及國際競賽：國內展覽最高4萬元、國際競賽最高12萬元。受理申請期限為115年10月1日至10月31日（以送達為準）；適用參展期間為116年1月1日至11月30日。本期申請已截止。",
+   "url": "https://bdsone.taitung.gov.tw/article.html?id=387",
+   "sourceType": "政府",
+   "firstSeen": "2026-11-16",
+   "updated": "2026-11-16",
+   "verified": "2026-11-16",
+   "linkStatus": "正常",
+   "status": "已截止",
+   "cycle": "",
+   "nextOpen": "",
+   "notes": "2026-11-16核實官方公告（臺東縣一站式產業輔導網 id=387）。",
    "year": "116",
    "parent": "",
    "kind": "現行"
