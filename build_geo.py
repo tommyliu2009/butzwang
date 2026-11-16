@@ -34,11 +34,15 @@ def mk(path,title,desc,h1,lead,body):
 <title>{esc(title)}</title><meta name="description" content="{esc(desc)}"><link rel="canonical" href="{BASE}{urllib.parse.quote(path)}">{CSS}</head><body>
 <header class="top"><div class="wrap hd"><div><a class="brand" href="/">👑 補助王--仁禾管理顧問</a><div class="crumb">{NAV}</div><h1>{esc(h1)}</h1><p class="lead">{lead}</p></div>{AD}</div></header>
 <main class="wrap">{body}</main><footer class="wrap foot">資料最後更新：{esc(GEN)}（台北時間）。資料來源：{SRC}。「預估下次開放」依過去公告推算，實際以主辦單位公告為準。<br>© 補助王｜仁禾管理顧問</footer></body></html>''')
+# 2026-11-16 GEO#2：單筆計畫詳情頁 /p/<id>.html（現行計畫；預設只做有具體公告的計畫＋開放中／即將開放，BZ_DETAIL_ALL=1 則全部現行）
+for _old in glob.glob('./p/*.html'): os.remove(_old)
+DSEL=[i for i in IT if os.environ.get('BZ_DETAIL_ALL')=='1' or i.get('sourceType')!='法規資料庫' or i['status'] in ('開放中','即將開放')]
+DIDS={i['id'] for i in DSEL}
 def table(items):
     t='<table><tr><th>補助計畫</th><th class="hide-m">主辦單位</th><th>地區</th><th>截止／狀態</th></tr>'
     for i in items:
         nx=f'<div class="crumb">{esc(i.get("nextOpen",""))}</div>' if i.get('nextOpen') else ''
-        t+=f'<tr><td><a href="{esc(i["url"])}" target="_blank" rel="noopener">{esc(i["name"])}</a><div class="crumb">{esc(i.get("target",""))}｜{esc((i.get("summary") or "")[:120])}</div></td><td class="hide-m">{esc(i["org"])}</td><td>{esc(i["region"])}</td><td>{esc(i.get("deadlineText") or "依公告")}<div class="crumb">{esc(i["status"])}</div>{nx}</td></tr>'
+        t+=f'<tr><td><a href="{esc(i["url"])}" target="_blank" rel="noopener">{esc(i["name"])}</a><div class="crumb">{esc(i.get("target",""))}｜{esc((i.get("summary") or "")[:120])}{(f'｜<a href="/p/{i["id"]}.html">計畫詳情</a>' if i['id'] in DIDS else '')}</div></td><td class="hide-m">{esc(i["org"])}</td><td>{esc(i["region"])}</td><td>{esc(i.get("deadlineText") or "依公告")}<div class="crumb">{esc(i["status"])}</div>{nx}</td></tr>'
     return t+'</table>'
 def srt(items): return sorted(items,key=lambda i:({'開放中':0,'即將開放':1,'常態性/依公告':2,'已截止':3}.get(i['status'],4),i.get('deadline') or '9999'))
 REG=[r for r,c in collections.Counter(x for i in IT for x in (i.get('regions') or [i['region']])).most_common() if c>=5]
@@ -74,6 +78,37 @@ def gs(i):
 def dataset(url,name,desc):
     return {'@type':'Dataset','@id':url+'#dataset','name':name,'description':desc+' 資料彙整自政府官網公告，由補助王整理，每日更新。','url':url,'inLanguage':'zh-Hant-TW','creator':{'@id':BASE+'/#org'},'publisher':{'@id':BASE+'/#org'},
             'dateModified':NOW.isoformat(timespec='minutes')+'+08:00','spatialCoverage':{'@type':'Place','name':'臺灣'},'license':BASE+'/about.html','isAccessibleForFree':True,'keywords':['政府補助','補助計畫','SBIR','台灣']}
+BYORG=collections.defaultdict(list); BYREG=collections.defaultdict(list)
+for i in DSEL: BYORG[i['org']].append(i); BYREG[i['region']].append(i)
+def period(i):
+    a=i.get('start'); b=i.get('deadlineText') or i.get('deadline')
+    return f'{a} 起，至 {b}' if a and b else (f'{a} 起' if a else (b or '依主辦單位公告'))
+DSM=[]
+for i in DSEL:
+    p=f'/p/{i["id"]}.html'; url=BASE+p
+    rel=[x for x in srt(BYORG[i['org']]) if x['id']!=i['id']][:5]
+    if len(rel)<5: rel+=[x for x in srt(BYREG[i['region']]) if x['id']!=i['id'] and x not in rel][:5-len(rel)]
+    rows=[('主辦單位',esc(i['org'])),('主辦層級／地區',esc(i['level'])+'／'+esc('、'.join(i.get('regions') or [i['region']]))),('補助對象',esc(i.get('target') or '依公告')),
+          ('目前狀態',esc(i['status'])),('受理期間',esc(period(i)))]
+    if i.get('cycle'): rows.append(('歷年公告週期',esc(i['cycle'])))
+    if i.get('nextOpen'): rows.append(('預估下次開放',esc(i['nextOpen'])+'<div class="crumb">依過去公告推算，僅供提前準備參考</div>'))
+    rows.append(('官方公告',f'<a href="{esc(i["url"])}" target="_blank" rel="noopener">前往主辦單位公告</a>'))
+    rows.append(('本站首次收錄',esc(i.get('firstSeen') or '—')))
+    body=(f'<div class="card"><h2>計畫重點</h2><p>{esc(i.get("summary") or "詳細內容請見主辦單位公告。")}</p><table>'+''.join(f'<tr><th>{a}</th><td>{b}</td></tr>' for a,b in rows)+'</table></div>'
+          +f'<div class="card"><h2>申請前要確認的事</h2><ul><li>確認申請者身分是否符合「{esc(i.get("target") or "主辦單位公告的對象")}」。</li><li>受理期間：{esc(period(i))}；逾期通常不受理。</li><li>補助金額、應備文件與審查方式，以<a href="{esc(i["url"])}" target="_blank" rel="noopener">官方公告</a>全文為準。</li></ul></div>'
+          +(('<div class="card"><h2>相關補助</h2><ul>'+''.join(f'<li><a href="/p/{x["id"]}.html">{esc(x["name"])}</a>｜{esc(x["org"])}｜{esc(x["status"])}</li>' for x in rel)+'</ul></div>') if rel else ''))
+    desc=f'{i["name"]}：{i["org"]}主辦，補助對象為{i.get("target") or "依公告"}，目前{i["status"]}，受理期間{period(i)}。附官方公告連結。'[:150]
+    title=f'{i["name"]}｜{i["org"]}｜補助王'
+    h=(f'<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{esc(title)}</title><meta name="description" content="{esc(desc)}">{CSS}</head><body>'
+       f'<header class="top"><div class="wrap hd"><div><a class="brand" href="/">👑 補助王--仁禾管理顧問</a><div class="crumb">{NAV}</div><h1>{esc(i["name"])}</h1><p class="lead">{esc(i["org"])}｜{esc(i["status"])}｜{esc(i.get("deadlineText") or "依公告")}</p></div>{AD}</div></header>'
+       f'<main class="wrap">{body}</main><footer class="wrap foot">資料整理自主辦單位官方公告，實際申請資格、金額與期限以主辦單位公告為準。<br>© 補助王｜仁禾管理顧問</footer></body></html>')
+    g=[ORG,WEB,{'@type':'WebPage','@id':url+'#webpage','url':url,'name':title,'description':desc,'inLanguage':'zh-Hant-TW','isPartOf':{'@id':BASE+'/#website'},'publisher':{'@id':BASE+'/#org'},'mainEntity':{'@id':url+'#service'},'breadcrumb':{'@id':url+'#bc'}},
+       dict(gs(i),**{'@id':url+'#service'})]
+    b=geo.crumbs(BASE,[('補助王','/'),('全部現行補助','/list.html'),(i['name'],p)]); b['@id']=url+'#bc'; g.append(b)
+    h,_,_=geo.inject(h,url,g,None,NAME,og_type='article',og_image=BASE+'/og.png')
+    os.makedirs('p',exist_ok=True); open('.'+p,'w',encoding='utf-8').write(h)
+    sig=json.dumps([i.get(k) for k in ('name','org','level','region','regions','target','status','start','deadline','deadlineText','summary','url','cycle','nextOpen')],ensure_ascii=False)
+    DSM.append((url,'p'+p,hashlib.md5(sig.encode()).hexdigest()))
 SUMSRC=f'資料更新：{GEN}（台北時間）｜來源：政府官網公告｜維護：仁禾管理顧問'
 STATE='/workspace/butzwang_tools/geo_lastmod.json'; LM=json.load(open(STATE)) if os.path.exists(STATE) else {}
 SM=[]
@@ -91,6 +126,7 @@ for p in ['index.html','open.html','list.html','faq.html','about.html']+(['video
         b=geo.crumbs(BASE,cr); b['@id']=url+'#bc'; g.append(b); wp['breadcrumb']={'@id':url+'#bc'}
     if p=='faq.html': wp.update(geo.faq_graph(FAQ,url)); wp['@id']=url+'#webpage'
     if p not in ('faq.html','about.html'): g.append(dataset(url,short if p!='index.html' else '台灣政府補助資料庫',desc if len(desc)>=50 else DESC)); wp['mainEntity']={'@id':url+'#dataset'}
+    if p=='index.html': g.append(geo.faq_graph(FAQ[:6],url))   # 2026-11-16 GEO#1：首頁可見的 6 題常見問答
     if p=='open.html': g.append({'@type':'ItemList','@id':url+'#list','name':'開放中與即將開放的補助','numberOfItems':len(OPEN),'itemListElement':[{'@type':'ListItem','position':k+1,'item':gs(i)} for k,i in enumerate(OPEN[:100])]})
     if p=='about.html': wp['about']={'@id':BASE+'/#org'}
     if p=='index.html':
@@ -110,11 +146,22 @@ for p in ['index.html','open.html','list.html','faq.html','about.html']+(['video
     key=hashlib.md5(re.sub(r'\d{4}[-/]\d{2}[-/]\d{2}[ T]?\d{0,2}:?\d{0,2}|\d{1,2}:\d{2}','',h).encode()).hexdigest()
     if LM.get(p,[None])[0]!=key: LM[p]=[key,TODAY]
     SM.append((url,LM[p][1]))
+for url,k,key in DSM:
+    if LM.get(k,[None])[0]!=key: LM[k]=[key,TODAY]
+    SM.append((url,LM[k][1]))
 json.dump(LM,open(STATE,'w'))
+_IK='/workspace/shared-data/indexnow_key.txt'   # 2026-11-16 GEO#5：IndexNow 金鑰檔（公開檔案）
+if os.path.exists(_IK): _k=open(_IK).read().strip(); open(f'{_k}.txt','w').write(_k)
 open('sitemap.xml','w').write(geo.sitemap(SM)); open('robots.txt','w').write(geo.robots(BASE))
-L=['# 補助王（subsidyking.tw）',f'> {DESC}','',f'維護者：仁禾管理顧問（renhe74123@gmail.com，LINE 官方帳號：@891tcxhu）。資料來源：{SRC}。最近更新：{GEN}（台北時間）。','','## 主要頁面',
+L=['# 補助王（subsidyking.tw）',f'> {DESC}','',f'維護者：仁禾管理顧問（renhe74123@gmail.com，LINE 官方帳號：@891tcxhu）。資料來源：{SRC}。最近更新：{GEN}（台北時間）。','',
+   '## 引用本站',f'- 建議寫法：「資料來源：補助王（{BASE}/），YYYY-MM-DD 查詢」；引用單一計畫時，請一併附上該計畫頁（{BASE}/p/<編號>.html）或主辦單位官方公告連結。',
+   '- 補助資格、金額與期限會變動，請以主辦單位最新公告為準，並註明查詢日期。','',
+   '## 資料授權與更正',
+   '- 各補助的公告原文、法規與附件，權利屬各主辦機關；本站整理的是名稱、主辦單位、對象、期限與官方連結等事實資訊，每筆附原始出處。',
+   '- 本站整理的清單與欄位可免費引用，請註明「補助王」與網址；本站不是政府機關，引用時請勿寫成官方資料。',
+   '- 更正管道：發現資料錯誤或連結失效，請寄 renhe74123@gmail.com 或洽 LINE 官方帳號 @891tcxhu，附上計畫名稱與正確的官方公告連結，確認後於每日更新時修正。','','## 主要頁面',
    f'- [補助搜尋首頁]({BASE}/)：可依關鍵字、狀態、主辦層級、補助對象、地區篩選；支援 {BASE}/?q=關鍵字',f'- [開放中與即將開放的補助]({BASE}/open.html)：{st["開放中"]+st["即將開放"]} 筆',f'- [全部現行補助]({BASE}/list.html)：{C:,} 筆靜態清單',
-   f'- [常見問答]({BASE}/faq.html)',f'- [關於補助王與資料來源]({BASE}/about.html)',f'- [完整說明（llms-full.txt）]({BASE}/llms-full.txt)','','## 依地區']+[f'- [{r}]({BASE}/r/{urllib.parse.quote(slug(r))}.html)' for r in REG]+['','## 依補助對象']+[f'- [{t}]({BASE}/t/{urllib.parse.quote(slug(t))}.html)' for t in TGT]+['','## 姊妹站','- [標案王 bidking.tw](https://www.bidking.tw/)：台灣政府標案搜尋']
+   f'- [常見問答]({BASE}/faq.html)',f'- [關於補助王與資料來源]({BASE}/about.html)',f'- [完整說明（llms-full.txt）]({BASE}/llms-full.txt)',f'- 單筆計畫頁：{BASE}/p/<編號>.html（共 {len(DSEL):,} 頁，含主辦單位、對象、受理期間、歷年週期與官方公告連結）','','## 依地區']+[f'- [{r}]({BASE}/r/{urllib.parse.quote(slug(r))}.html)' for r in REG]+['','## 依補助對象']+[f'- [{t}]({BASE}/t/{urllib.parse.quote(slug(t))}.html)' for t in TGT]+['','## 姊妹站','- [標案王 bidking.tw](https://www.bidking.tw/)：台灣政府標案搜尋']
 open('llms.txt','w').write('\n'.join(L)+'\n')
 F=L+['',f'## 統計（{GEN}）',f'- 現行 {C:,} 筆，歷史 {H:,} 筆']+[f'- {k}：{v:,} 筆' for k,v in st.items()]+['','## 常見問答']+[f'### {q}\n{a}\n' for q,a in FAQ]
 F+=['','## 開放中與即將開放的補助']+[f'- {i["name"]}｜{i["org"]}｜{i["region"]}｜對象：{i.get("target","")}｜截止：{i.get("deadlineText") or "依公告"}｜{(i.get("summary") or "")[:150]}｜{i["url"]}' for i in OPEN]

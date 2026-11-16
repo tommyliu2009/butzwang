@@ -30,5 +30,6 @@ git -c user.name="${GIT_NAME:-tommyliu2009}" -c user.email="${GIT_EMAIL:-tommyli
   commit -qm "資料更新 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
 git push -q origin main
 echo "已部署：$(git log -1 --format=%s)"
+(sleep 60; python3 /workspace/shared-data/indexnow.py www.subsidyking.tw /workspace/butzwang) || true   # 2026-11-16 GEO#5：IndexNow（失敗不影響部署）
 bash themes/grantking/deploy_gk.sh || echo "⚠️ 獎補助資訊網部署失敗，請檢查"   # 獎補助資訊網（2026-10-24）
 bash /workspace/rd-subsidy/deploy.sh || echo "⚠️ 研發補助王部署失敗，請檢查"   # 研發補助王 web20（2026-10-24）

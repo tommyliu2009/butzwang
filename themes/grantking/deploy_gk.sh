@@ -11,3 +11,4 @@ if git diff --cached --quiet; then echo "獎補助資訊網：無變動"; exit 0
 git -c user.name=tommyliu2009 -c user.email=tommyliu2009@users.noreply.github.com commit -qm "資料更新 $(TZ=Asia/Taipei date '+%Y-%m-%d %H:%M')"
 git push -q origin main
 echo "獎補助資訊網已部署：$(git log -1 --format=%h)"
+sleep 60; python3 /workspace/shared-data/indexnow.py www.grantking.tw /workspace/grant-king || true   # 2026-11-16 GEO#14：IndexNow（失敗不影響部署）
