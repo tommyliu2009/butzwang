@@ -102,7 +102,7 @@ home=(f'<h1>{NAME}：臺灣政府獎勵與補助計畫查詢</h1><section class=
  '<section class="box"><h2>補助件數最多的主管機關</h2><ul class="tiles">'+''.join(f'<li><a href="/agencies/{oslug(o)}.html">{E(o)}<span>{len(ORGS[o])}</span></a></li>' for o in BIGORG[:12])+'</ul><p class="more"><a href="/agencies/">全部主管機關 →</a></p></section></div>'
  f'<section class="box"><h2>最近新增</h2>{rows(NEW)}</section>'
  '<section class="box"><h2>第一次申請？</h2><p>從確認資格、準備公司登記與財務文件，到撰寫計畫書與送件，請看<a href="/guide.html">申請流程與準備文件清單</a>；看不懂公告用語時，可查<a href="/glossary.html">獎補助名詞解釋</a>。</p></section>'
- f'<section class="box"><h2>常見問答</h2>{faqhtml(4)}<p class="more"><a href="/qa.html">更多問答 →</a></p></section>{ABOUT}')
+ f'<section class="box"><h2>常見問答</h2>{faqhtml(4)}<p class="more"><a href="/qa.html">更多問答 →</a></p></section>{ABOUT}'+'<!--MX:related--><section class="box mx-box mx-related" aria-label="延伸資源"><h2>延伸資源</h2><ul><li><a href="/about-data.html">關於本站與資料來源</a>：資料來源、更新頻率、收錄規模與維運單位說明。</li><li><a href="https://www.subsidyking.tw/">補助王</a>：全台政府補助資料庫</li><li><a href="https://web20.subsidyking.tw/">研發補助王</a>：SBIR 與研發補助</li><li><a href="https://web7.subsidyking.tw/">節能補助王</a>：節能與設備汰換補助</li><li><a href="https://news.subsidyking.tw/">台灣政府補助新聞網</a>：最新政府補助新聞與公告</li><li><a href="https://web18.subsidyking.tw/">仁禾管理顧問</a>：補助申請與標案備標顧問</li></ul></section><!--/MX:related-->')
 page('/',f'{NAME}｜臺灣政府獎勵與補助計畫查詢・截止日曆','依主管機關、申請對象與截止日期查詢臺灣中央部會與地方政府的獎勵、補助計畫，收件中與即將開放項目一覽，每日更新。',home,[web,dset,itemlist('/',OPEN,'收件中與即將開放的獎補助'),faqld('/')])
 # 搜尋頁（前端篩選，資料來自同一份 data.js）
 page('/search.html',f'找獎補助 – {NAME}','輸入關鍵字，即時篩選臺灣政府獎勵與補助計畫，可依狀態、主管層級與地區縮小範圍。',
